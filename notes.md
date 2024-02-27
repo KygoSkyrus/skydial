@@ -1,1 +1,0 @@
-https://github.com/diegogurgel/react-webrtc/blob/master/src/components/video.js
