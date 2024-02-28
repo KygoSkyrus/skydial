@@ -32,11 +32,8 @@ const DialPage = (props) => {
 
     // SHOW caller's video when he starts a call
     useEffect(() => {
+        // console.log('socket', socket)
 
-
-        console.log('socket', socket)
-
-        handleSubmitForm();
 
         const startCall = async () => {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -44,11 +41,35 @@ const DialPage = (props) => {
             myVideoRef.current.srcObject = stream;
         }
         // startCall()
+
+        // connectSocket();
+        socket.connect();
+        socket.emit('join-room', { userId, dialId })
+        return () => {
+            socket.disconnect();
+        };
+
+        // socket.on('connect', onConnect);
+        // socket.on('disconnect', onDisconnect);    
+        // return () => {
+        //   socket.off('connect', onConnect);
+        //   socket.off('disconnect', onDisconnect);
+        // };
     }, [])
 
+    function connect() {
+        socket.connect();
+    }
 
-    const handleSubmitForm = useCallback(
+    function disconnect() {
+        socket.disconnect();
+    }
+
+
+    const connectSocket = useCallback(
         (e) => {
+            socket.connect()//needed when autoconnect is false, connect only when user is authenticated
+
             //   room created
             socket.on("connect", () => {
                 console.log('connetxttxtxtx')
@@ -106,7 +127,6 @@ const DialPage = (props) => {
 
     const handleNegoIncoming = async (negoOfferRes) => {
         const ans = await peer.getAnswer(negoOfferRes);
-
     }
 
     const handleNegoAccepted = async (negoOfferRes) => {
@@ -120,16 +140,19 @@ const DialPage = (props) => {
 
 
     return (
-
-        <div>
-            <video ref={myVideoRef} autoPlay muted style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
-            <video ref={remoteVideoRef} autoPlay style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
+        <>
             <div>
-                <button onClick={pickCall}>PICK UP</button>
-                <button >End Call</button>
+                <video ref={myVideoRef} autoPlay muted style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
+                <video ref={remoteVideoRef} autoPlay style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
+                <div>
+                    <button onClick={pickCall}>PICK UP</button>
+                    <button >End Call</button>
+                </div>
             </div>
-        </div>
 
+            <button onClick={disconnect}>Disconnect</button>
+
+        </>
     );
 };
 

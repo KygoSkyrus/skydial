@@ -59,6 +59,13 @@ io.on('connection', (socket) => {
 
   console.log('a user connected', socket.id);
 
+  socket.on('join-room', (user) => {
+    //to join a user to a room
+
+    console.log('user=====================', user)
+
+    socket.join(user.dialId)
+  })
   //new TRYYYYYYYY------------------STARTS_____________________________
 
 
@@ -117,7 +124,7 @@ io.on('connection', (socket) => {
   //new TRYYYYYYYY------------------ENDS--__ __ _ __ __ _ _ __ _ __ _ __ _ ___ __ __ __
 
   //the user arguement is passed from the fronend
-  socket.on('joinroom', (user) => {
+  socket.on('join_room', (user) => {
     //to join a user to a room
 
     console.log('user=====================', user)
