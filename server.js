@@ -59,16 +59,38 @@ io.on('connection', (socket) => {
 
   console.log('a user connected', socket.id);
 
+
+
   socket.on('join-room', ({userId,dialId,offer}) => {
     //to join a user to a room
 
-    console.log('user=====================',userId,dialId)
+    console.log('___user',userId,dialId)
     socket.join(dialId)
 
-    io.to(dialId).emit("user:joined", { id: socket.id });
+    socket.to(dialId).emit("user:joined", { id: socket.id })
+    // io.to(dialId).emit("user:joined", { id: socket.id });
     // io.to(socket.id).emit("room:join", {userId,dialId});// can sent msg direct to a socket by using its socket it
   })
 
+  socket.on('offer:req', ({ offer, to }) => {
+    console.log('+++offer_Req',offer,to)
+    socket.to(to).emit("offer_recieved", {
+      from: socket.id,
+      offer,
+      to
+    });
+  })
+
+  socket.on('offer_accepted', ({ answer, to }) => {
+    console.log('offer_accepted',answer,to)
+    socket.to(to).emit("offer_resolved", {
+      from: socket.id,
+      answer,
+    });
+  })
+
+
+  
   socket.on('msg', ({msg,to}) => {
     console.log('msg',msg,to)
     socket.to(to).emit("msg", {
@@ -76,15 +98,6 @@ io.on('connection', (socket) => {
       from: socket.id,
     });
   })
-
-  socket.on('offer_Req', ({ offer, to }) => {
-    console.log('offer',OffscreenCanvas,to)
-    socket.to(to).emit("msg", {
-      msg,
-      from: socket.id,
-    });
-  })
-
   //new TRYYYYYYYY------------------STARTS_____________________________
 
 

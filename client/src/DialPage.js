@@ -13,7 +13,7 @@ const socket = io('http://localhost:3000', { autoConnect: false }); // getting t
 
 //listens to every socket events
 socket.onAny((event, ...args) => {
-    console.log('triggered event :- ', event, args);
+    // console.log('triggered event :- ', event, args);
 });
 
 
@@ -31,13 +31,6 @@ const DialPage = () => {
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
 
-
-
-    async function sendOffer(id) {
-        const offer = await peer.getOffer();//doing the stuff of handlecalluser.. creating and sending an offer when user joins a room
-        socket.emit("offer_req", { offer, to: id })
-    }
-
     // SHOW caller's video when he starts a call
     useEffect(() => {
         // console.log('socket', socket)
@@ -48,7 +41,7 @@ const DialPage = () => {
             setLocalStream(stream);
             myVideoRef.current.srcObject = stream;
         }
-        // startCall()
+        startCall()
         const uId = uuidv4();
         setUserId(uId)
 
@@ -61,11 +54,15 @@ const DialPage = () => {
 
         // socket.emit('join-room', { userId: uId, dialId })
         socket.on("user:joined", handleUserJoined);
+        socket.on("offer_recieved", handleOfferReq)
+        socket.on("offer_resolved", handleOfferAcceptance)
         socket.on("msg", recievedMsg)
 
         return () => {
             socket.disconnect();
             socket.off("user:joined", handleUserJoined);
+            socket.off("offer_recieved", handleOfferReq)
+            socket.on("offer_resolved", handleOfferAcceptance)
             socket.off("msg", recievedMsg)
         };
 
@@ -78,52 +75,45 @@ const DialPage = () => {
         // };
     }, [])
 
-    function connect() {
-        socket.connect();
+    const handleUserJoined = ({ id }) => {
+        console.log(`handleUserJoined____Email ${id} joined room`);
+        setCalleeId(id);
+
+        sendOffer(id)//sending offer when user joins
     }
 
-    function disconnect() {
-        socket.disconnect();
+    async function sendOffer(id) {
+        console.log('sendOffer', id)
+        const offer = await peer.getOffer();//doing the stuff of handlecalluser.. creating and sending an offer when user joins a room
+        console.log('offerr', offer, socket)
+        socket.emit("offer:req", { offer, to: id })
     }
 
-
-    const connectSocket = useCallback(
-        (e) => {
-            socket.connect()//needed when autoconnect is false, connect only when user is authenticated
-
-            //   room created
-            socket.on("connect", () => {
-                console.log('connetxttxtxtx')
-            });
-            //   socket.emit("create_room", { userId, dialId });
-        },
-        [userId, dialId, socket]
-    );
-
-    const handleCallAccepted = async (offerRes) => {
-        console.log('handleCallAccepted', offerRes)
-        peer.setLocalDescription(offerRes)
-        sendStreams();
-    }
 
     const sendStreams = useCallback(async () => {
-        // const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        // setLocalStream(stream);
-        // myVideoRef.current.srcObject = stream;
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setLocalStream(stream);
+        myVideoRef.current.srcObject = stream;
 
-        // for (const track of stream.getTracks()) {
-        //     peer.peer.addTrack(track, stream);
-        // }
+        for (const track of stream.getTracks()) {
+            peer.peer.addTrack(track, stream);
+        }
     }, []);
 
 
-    useEffect(() => {
-        const handleIncoming = async () => {
-            console.log('theOfferRequest')
-            const ans = await peer.getAnswer()
-        }
-        // handleIncoming();
-    }, [])
+    const handleOfferReq = async (data) => {
+        console.log('handleOfferReq',data.to)
+        const ans = await peer.getAnswer(data.offer)
+        socket.emit("offer_accepted", { answer: ans, to: data.to })
+    }
+
+    const handleOfferAcceptance = async (data) => {
+        // this is not running
+        console.log('__handleOfferAcceptance')
+        peer.setLocalDescription(data.answer)
+        sendStreams();
+    }
+
 
     useEffect(() => {
         peer.peer.addEventListener('track', async ev => {
@@ -154,10 +144,6 @@ const DialPage = () => {
         await peer.setLocalDescription(negoOfferRes);
     }
 
-    const pickCall = () => {
-
-    }
-
     const sendMsg = () => {
         socket.emit("msg", { msg, to: dialId })
     }
@@ -170,13 +156,28 @@ const DialPage = () => {
         list.append(newItem)
     }
 
-    const handleUserJoined = useCallback(({ id }) => {
-        console.log(`Email ${id} joined room`);
-        setCalleeId(id);
+    const connectSocket = useCallback(
+        (e) => {
+            socket.connect()//needed when autoconnect is false, connect only when user is authenticated
 
-        sendOffer(id)//sending offer when user joins
+            //   room created
+            socket.on("connect", () => {
+                console.log('connetxttxtxtx')
+            });
+            //   socket.emit("create_room", { userId, dialId });
+        },
+        [userId, dialId, socket]
+    );
 
-    }, []);
+    function connect() {
+        socket.connect();
+    }
+
+    function disconnect() {
+        socket.disconnect();
+    }
+
+    const pickCall = () => { }
 
     return (
         <>
