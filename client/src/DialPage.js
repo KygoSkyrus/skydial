@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import peer from './webRTCService'
 import { useParams } from 'react-router-dom';
-// import { useSocket } from './SocketContext';
 import { io } from "socket.io-client";
+import { v4 as uuidv4 } from 'uuid';
+
+import peer from './webRTCService'
+// import { useSocket } from './SocketContext';
 
 
 
@@ -16,19 +18,25 @@ socket.onAny((event, ...args) => {
 
 
 
-const DialPage = (props) => {
+const DialPage = () => {
     const { dialId } = useParams();
-    const { userId } = props;
     console.log("maychhc", dialId)
 
     const [localStream, setLocalStream] = useState(null);
     const [remoteStream, setRemoteStream] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const [calleeId, setCalleeId] = useState(null)
 
+    const [msg, setMsg] = useState("")
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
 
 
 
+    async function sendOffer(id) {
+        const offer = await peer.getOffer();//doing the stuff of handlecalluser.. creating and sending an offer when user joins a room
+        socket.emit("offer_req", { offer, to: id })
+    }
 
     // SHOW caller's video when he starts a call
     useEffect(() => {
@@ -41,13 +49,26 @@ const DialPage = (props) => {
             myVideoRef.current.srcObject = stream;
         }
         // startCall()
+        const uId = uuidv4();
+        setUserId(uId)
+
 
         // connectSocket();
         socket.connect();
-        socket.emit('join-room', { userId, dialId })
+
+        socket.emit('join-room', { userId: uId, dialId })
+
+
+        // socket.emit('join-room', { userId: uId, dialId })
+        socket.on("user:joined", handleUserJoined);
+        socket.on("msg", recievedMsg)
+
         return () => {
             socket.disconnect();
+            socket.off("user:joined", handleUserJoined);
+            socket.off("msg", recievedMsg)
         };
+
 
         // socket.on('connect', onConnect);
         // socket.on('disconnect', onDisconnect);    
@@ -137,7 +158,25 @@ const DialPage = (props) => {
 
     }
 
+    const sendMsg = () => {
+        socket.emit("msg", { msg, to: dialId })
+    }
 
+    const recievedMsg = (data) => {
+        console.log('data', data)
+        const list = document.querySelector('.list')
+        const newItem = document.createElement('li');
+        newItem.textContent = data.msg;
+        list.append(newItem)
+    }
+
+    const handleUserJoined = useCallback(({ id }) => {
+        console.log(`Email ${id} joined room`);
+        setCalleeId(id);
+
+        sendOffer(id)//sending offer when user joins
+
+    }, []);
 
     return (
         <>
@@ -151,6 +190,18 @@ const DialPage = (props) => {
             </div>
 
             <button onClick={disconnect}>Disconnect</button>
+
+            <div>
+                <input type='text' value={msg} onChange={e => setMsg(e.target.value)} />
+                <button onClick={sendMsg}>Send MSG</button>
+            </div>
+
+
+            <div>
+                <h4>recieved msg</h4>
+                <ul className='list'></ul>
+            </div>
+
 
         </>
     );

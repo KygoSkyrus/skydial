@@ -59,13 +59,32 @@ io.on('connection', (socket) => {
 
   console.log('a user connected', socket.id);
 
-  socket.on('join-room', (user) => {
+  socket.on('join-room', ({userId,dialId,offer}) => {
     //to join a user to a room
 
-    console.log('user=====================', user)
+    console.log('user=====================',userId,dialId)
+    socket.join(dialId)
 
-    socket.join(user.dialId)
+    io.to(dialId).emit("user:joined", { id: socket.id });
+    // io.to(socket.id).emit("room:join", {userId,dialId});// can sent msg direct to a socket by using its socket it
   })
+
+  socket.on('msg', ({msg,to}) => {
+    console.log('msg',msg,to)
+    socket.to(to).emit("msg", {
+      msg,
+      from: socket.id,
+    });
+  })
+
+  socket.on('offer_Req', ({ offer, to }) => {
+    console.log('offer',OffscreenCanvas,to)
+    socket.to(to).emit("msg", {
+      msg,
+      from: socket.id,
+    });
+  })
+
   //new TRYYYYYYYY------------------STARTS_____________________________
 
 
@@ -179,14 +198,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', ({ name, msg }) => {
     console.log('a user disconnected', socket.id);
   })
-
-
-
-  socket.on('create_room', (user) => {
-    //to join a user to a room
-console.log('created a room')
-  })
-
 
 
 
