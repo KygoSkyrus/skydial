@@ -4,7 +4,6 @@ import { io } from "socket.io-client";
 import { v4 as uuidv4 } from 'uuid';
 
 import peer from './webRTCService'
-// import { useSocket } from './SocketContext';
 
 
 
@@ -30,6 +29,8 @@ const DialPage = () => {
     const [msg, setMsg] = useState("")
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
+    // https://stackoverflow.com/questions/66062565/failed-to-set-remote-answer-sdp-called-in-wrong-state-stable
+    // throws this error when you try to connect a peer which already has a stable connection to another connection
 
     // SHOW caller's video when he starts a call
     useEffect(() => {
@@ -41,7 +42,7 @@ const DialPage = () => {
             setLocalStream(stream);
             myVideoRef.current.srcObject = stream;
         }
-        startCall()
+        // startCall()
         const uId = uuidv4();
         setUserId(uId)
 
@@ -55,14 +56,14 @@ const DialPage = () => {
         // socket.emit('join-room', { userId: uId, dialId })
         socket.on("user:joined", handleUserJoined);
         socket.on("offer_recieved", handleOfferReq)
-        socket.on("offer_resolved", handleOfferAcceptance)
+        socket.on("ressss", handleOfferAcceptance)
         socket.on("msg", recievedMsg)
 
         return () => {
             socket.disconnect();
             socket.off("user:joined", handleUserJoined);
             socket.off("offer_recieved", handleOfferReq)
-            socket.on("offer_resolved", handleOfferAcceptance)
+            socket.off("ressss", handleOfferAcceptance)
             socket.off("msg", recievedMsg)
         };
 
@@ -83,12 +84,24 @@ const DialPage = () => {
     }
 
     async function sendOffer(id) {
-        console.log('sendOffer', id)
         const offer = await peer.getOffer();//doing the stuff of handlecalluser.. creating and sending an offer when user joins a room
-        console.log('offerr', offer, socket)
+        console.log('sendOffer', id,offer)
         socket.emit("offer:req", { offer, to: id })
     }
 
+
+    const handleOfferReq = async (data) => {
+        const ans = await peer.getAnswer(data.offer)
+        console.log('handleOfferReq',data.to,ans)
+        socket.emit("offer_accepted", { answer: ans, to: data.to })
+    }
+
+    const handleOfferAcceptance = async (data) => {
+        // this is not running
+        console.log('__handleOfferAcceptance')
+        peer.setLocalDescription(data.answer)
+        // sendStreams();
+    }
 
     const sendStreams = useCallback(async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -101,19 +114,6 @@ const DialPage = () => {
     }, []);
 
 
-    const handleOfferReq = async (data) => {
-        console.log('handleOfferReq',data.to)
-        const ans = await peer.getAnswer(data.offer)
-        socket.emit("offer_accepted", { answer: ans, to: data.to })
-    }
-
-    const handleOfferAcceptance = async (data) => {
-        // this is not running
-        console.log('__handleOfferAcceptance')
-        peer.setLocalDescription(data.answer)
-        sendStreams();
-    }
-
 
     useEffect(() => {
         peer.peer.addEventListener('track', async ev => {
@@ -125,6 +125,7 @@ const DialPage = () => {
     }, [])
 
     const handleNegoNeeded = useCallback(async () => {
+        console.log('_handlenego needed')
         const offer = await peer.getOffer();
     }, [])
 

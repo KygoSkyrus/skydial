@@ -80,13 +80,18 @@ io.on('connection', (socket) => {
       to
     });
   })
-
+// NOTE: use io to emit to a specific socket
   socket.on('offer_accepted', ({ answer, to }) => {
-    console.log('offer_accepted',answer,to)
-    socket.to(to).emit("offer_resolved", {
-      from: socket.id,
-      answer,
-    });
+    console.log('offer_accepted',answer,to);
+      io.to(to).emit("ressss", {
+        from: socket.id,
+        answer:answer,
+        to
+      });
+    // socket.to(to).emit("offer_resolved", {
+    //   from: socket.id,
+    //   answer,
+    // });
   })
 
 
