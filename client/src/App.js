@@ -5,9 +5,6 @@ import DialPage from './DialPage'
 import { useEffect, useState } from 'react';
 
 function App() {
-
-
-
   return (
     <BrowserRouter>
       <div>

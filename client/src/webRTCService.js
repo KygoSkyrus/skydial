@@ -24,9 +24,16 @@ class PeerService {
     }
 
     async setLocalDescription(ans) {
-        if (this.peer) {
-            await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
-        }
+        // try {
+            if (this.peer) {
+                let stateee= this.peer.connectionState
+                console.log('connection state',stateee )
+
+                await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
+            }
+        // } catch (error) {
+        //     console.log('err',error)
+        // }
     }
 
     async getOffer() {

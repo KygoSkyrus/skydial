@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 
 
 const app = express();
-const server = http.createServer(app); 
+const server = http.createServer(app);
 const io = socket(server);
 
 //set static folder
@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(bodyParser.json())
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 
 
@@ -59,12 +59,25 @@ io.on('connection', (socket) => {
 
   console.log('a user connected', socket.id);
 
+  socket.emit("on:connection", socket.id)
 
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("callEnded")
+  })
 
-  socket.on('join-room', ({userId,dialId,offer}) => {
+  socket.on("callUser", (data) => {
+    io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
+  })
+
+  socket.on("answerCall", (data) => {
+    io.to(data.to).emit("callAccepted", data.signal)
+  })
+  // SIMPLE PEER APPROACH
+
+  socket.on('join-room', ({ userId, dialId, offer }) => {
     //to join a user to a room
 
-    console.log('___user',userId,dialId)
+    console.log('___user', userId, dialId)
     socket.join(dialId)
 
     socket.to(dialId).emit("user:joined", { id: socket.id })
@@ -73,31 +86,49 @@ io.on('connection', (socket) => {
   })
 
   socket.on('offer:req', ({ offer, to }) => {
-    console.log('+++offer_Req',offer,to)
+    console.log('+++offer_Req', offer, to)
     socket.to(to).emit("offer_recieved", {
       from: socket.id,
       offer,
       to
     });
   })
-// NOTE: use io to emit to a specific socket
+  // NOTE: use io to emit to a specific socket
   socket.on('offer_accepted', ({ answer, to }) => {
-    console.log('offer_accepted',answer,to);
-      io.to(to).emit("ressss", {
-        from: socket.id,
-        answer:answer,
-        to
-      });
+    console.log('offer_accepted', answer, to);
+    io.to(to).emit("ressss", {
+      from: socket.id,
+      answer: answer,
+      to
+    });
     // socket.to(to).emit("offer_resolved", {
     //   from: socket.id,
     //   answer,
     // });
   })
 
+  socket.on('nego_req', ({ negoOffer, to }) => {
+    console.log('nego_req', negoOffer, to);
+    io.to(to).emit("nego_req", {
+      from: socket.id,
+      offer: negoOffer,
+      to
+    });
+  })
 
-  
-  socket.on('msg', ({msg,to}) => {
-    console.log('msg',msg,to)
+  socket.on('nego_res', ({ negoRes, to }) => {
+    console.log('nego_res', negoRes, to);
+    io.to(to).emit("nego_res", {
+      from: socket.id,
+      answer: negoOffer,
+      to
+    });
+  })
+
+
+
+  socket.on('msg', ({ msg, to }) => {
+    console.log('msg', msg, to)
     socket.to(to).emit("msg", {
       msg,
       from: socket.id,
