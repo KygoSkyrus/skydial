@@ -31,22 +31,22 @@ const DialPage = () => {
     const [idToCall, setIdToCall] = useState("")
     const [callEnded, setCallEnded] = useState(false)
     const connectionRef = useRef()
-    
-    
-    
+
+
+
     const [msg, setMsg] = useState("")
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
 
     // SHOW caller's video when he starts a call
     useEffect(() => {
-        
+
         const startCall = async () => {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             setLocalStream(stream);
             myVideoRef.current.srcObject = stream;
         }
-        startCall()
+        // startCall()
         // const uId = uuidv4();
 
 
@@ -225,68 +225,68 @@ const DialPage = () => {
 
     return (
         <>
-            <div>
-                <video ref={myVideoRef} playsInline autoPlay muted style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
+            <div className='dark bg-slate-950 bg-zinc-950 flex flex-col justify-center items-center h-dvh text-purple-600 '>
 
-                <div className="video">
-                    {callAccepted && !callEnded ?
-                        <video ref={remoteVideoRef} playsInline autoPlay style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video> :
-                        null}
+                <div className="video rounded-md border border-gray-500 p-3 mb-10">
+                    {/* {callAccepted && !callEnded ? */}
+                    <video ref={remoteVideoRef} playsInline autoPlay style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
+                    {/* :
+                            null} */}
+                    <video ref={myVideoRef} playsInline autoPlay muted style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
                 </div>
-                {/* <div>
-                    <button onClick={pickCall}>PICK UP</button>
-                    <button >End Call</button>
-                </div> */}
-            </div>
 
 
-            <div>
-                <input type='text' onChange={e => setName(e.target.value)} value={name} placeholder='your name' />
 
-            </div>
+                <div>
 
-            <div className="call-button">
-                {callAccepted && !callEnded ? (
-                    <button variant="contained" color="secondary" onClick={endCall}>
-                        End Call
-                    </button>
-                ) : (
-                    <button color="primary" aria-label="call" onClick={() => callUser(idToCall)}>
-                        call
-                    </button>
-                )}
-                {idToCall}
-            </div>
-            <div><button onClick={e => navigator.clipboard.writeText(mySocketId)}>Share call url</button></div>
+                    <div>
+                        <input className='py-2 px-3 rounded-md focus:outline-none border focus:border-purple-500' type='text' onChange={e => setName(e.target.value)} value={name} placeholder='your name' />
 
-            <div>
-                <input type='text' placeholder='enter caller id' value={idToCall}
-                    onChange={(e) => setIdToCall(e.target.value)} />
-            </div>
-
-            <div>
-                {receivingCall && !callAccepted ? (
-                    <div className="caller">
-                        <h1 >{name} is calling...</h1>
-                        <button variant="contained" color="primary" onClick={answerCall}>
-                            Answer
-                        </button>
                     </div>
-                ) : null}
+
+                    <div className="call-button">
+                        {callAccepted && !callEnded ? (
+                            <button variant="contained" color="secondary" onClick={endCall}>
+                                End Call
+                            </button>
+                        ) : (
+                            <button color="primary" aria-label="call" onClick={() => callUser(idToCall)}>
+                                call
+                            </button>
+                        )}
+                        {idToCall}
+                    </div>
+                    <div><button onClick={e => navigator.clipboard.writeText(mySocketId)}>Share call url</button></div>
+
+                    <div>
+                        <input type='text' placeholder='enter caller id' value={idToCall}
+                            onChange={(e) => setIdToCall(e.target.value)} />
+                    </div>
+
+                    <div>
+                        {receivingCall && !callAccepted ? (
+                            <div className="caller">
+                                <h1 >{name} is calling...</h1>
+                                <button variant="contained" color="primary" onClick={answerCall}>
+                                    Answer
+                                </button>
+                            </div>
+                        ) : null}
+                    </div>
+
+                </div>
+
+                {/* <div>
+                    <input type='text' value={msg} onChange={e => setMsg(e.target.value)} />
+                    <button onClick={sendMsg}>Send MSG</button>
+                </div>
+
+                <div>
+                    <h4>recieved msg</h4>
+                    <ul className='list'></ul>
+                </div> */}
+
             </div>
-
-
-            <div>
-                <input type='text' value={msg} onChange={e => setMsg(e.target.value)} />
-                <button onClick={sendMsg}>Send MSG</button>
-            </div>
-
-            <div>
-                <h4>recieved msg</h4>
-                <ul className='list'></ul>
-            </div>
-
-
         </>
     );
 };

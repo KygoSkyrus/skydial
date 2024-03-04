@@ -7,12 +7,10 @@ import { useEffect, useState } from 'react';
 function App() {
   return (
     <BrowserRouter>
-      <div>
         <Routes>
           <Route path='/' exact element={<Homepage />} />
           <Route path='/dial/:dialId' exact element={<DialPage />} />
         </Routes>
-      </div>
     </BrowserRouter>
   )
 }
