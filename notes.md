@@ -5,6 +5,7 @@
 
 
 - whenever anyon other than user itself joins the room, start the call (run the calluser function)
+- either from main page or from dialpage,, a popup should appear for user's name
 
 - currently there is a room system,,
 - check if the room systems works for group video call,,

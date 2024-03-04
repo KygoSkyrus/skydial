@@ -46,7 +46,7 @@ const DialPage = () => {
             setLocalStream(stream);
             myVideoRef.current.srcObject = stream;
         }
-        // startCall()
+        startCall()
         // const uId = uuidv4();
 
 
@@ -65,22 +65,12 @@ const DialPage = () => {
             setName(data.name)
             setCallerSignal(data.signal)
         })
-        // socket.on("offer_recieved", handleOfferReq)
-        // socket.on("ressss", handleOfferAcceptance)
-        // socket.on("nego_req", handleNegoIncoming)
-        // socket.on("nego_res", handleNegoAccepted)
+
         socket.on("msg", recievedMsg)
 
         return () => {
             socket.disconnect();
             socket.off("on:connection", handleConnection);
-
-            // socket.off("user:joined", handleUserJoined);
-            // socket.off("offer_recieved", handleOfferReq)
-            // socket.off("ressss", handleOfferAcceptance)
-            // socket.off("nego_req", handleNegoIncoming)
-            // socket.off("nego_res", handleNegoAccepted)
-            // socket.off("msg", recievedMsg)
         };
 
     }, [])
@@ -134,75 +124,6 @@ const DialPage = () => {
         connectionRef.current = peer
     }
 
-    // async function sendOffer(id) {
-    //     const offer = await peer.getOffer();//doing the stuff of handlecalluser.. creating and sending an offer when user joins a room
-    //     console.log('sendOffer', id, offer)
-    //     socket.emit("offer:req", { offer, to: id })
-    // }
-
-
-    // const handleOfferReq = async (data) => {
-    //     const ans = await peer.getAnswer(data.offer)
-    //     console.log('handleOfferReq', data.to, ans)
-    //     socket.emit("offer_accepted", { answer: ans, to: data.to })
-    // }
-
-    // const handleOfferAcceptance = async (data) => {
-    //     // this is not running
-    //     console.log('__handleOfferAcceptance', data)
-    //     await peer.setLocalDescription(data?.answer)
-    //     sendStreams();
-    // }
-
-    // const sendStreams = useCallback(async () => {
-    //     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    //     setLocalStream(stream);
-    //     myVideoRef.current.srcObject = stream;
-    //     console.log('send streem', stream)
-
-    //     for (const track of stream.getTracks()) {
-    //         peer.peer.addTrack(track, stream);
-    //     }
-    // }, []);
-
-
-    // const handleNegoNeeded = useCallback(async () => {
-    //     console.log('_handlenego needed')
-    //     const offer = await peer.getOffer();
-    //     console.log('calleeeeeid', calleeId)
-
-    //     socket.emit("nego_req", { negoOffer: offer, to: calleeId })
-    // }, [])
-
-    // useEffect(() => {
-    //     peer.peer.addEventListener('negotiationneeded', handleNegoNeeded)
-    //     return () => {
-    //         peer.peer.removeEventListener('negotiationneeded', handleNegoNeeded)
-    //     }
-    // }, [])
-
-
-    // const handleNegoIncoming = async (data) => {
-    //     console.log('handleNegoIncoming', data)
-    //     const ans = await peer.getAnswer(data.offer);
-    //     socket.emit("nego_res", { negoRes: ans, to: calleeId })
-    // }
-
-    // const handleNegoAccepted = async (data) => {
-    //     console.log('handleNegoAccepted', data)
-    //     await peer.setLocalDescription(data.answer);
-    // }
-
-
-    // useEffect(() => {
-    //     peer.peer.addEventListener('track', async ev => {
-    //         const remoteStream = ev.streams;
-    //         console.log('trackkk', remoteStream)
-    //         setRemoteStream(remoteStream)
-    //         remoteVideoRef.current.srcObject = remoteStream[0];
-    //     })
-    // }, [])
-
 
     const sendMsg = () => {
         socket.emit("msg", { msg, to: dialId })
@@ -225,14 +146,14 @@ const DialPage = () => {
 
     return (
         <>
-            <div className='dark bg-slate-950 bg-zinc-950 flex flex-col justify-center items-center h-dvh text-purple-600 '>
+            <div className='p-8 dark bg-slate-950 bg-zinc-950 flex flex-col justify-center items-center h-dvh text-purple-600 '>
 
-                <div className="video rounded-md border border-gray-500 p-3 mb-10">
-                    {/* {callAccepted && !callEnded ? */}
-                    <video ref={remoteVideoRef} playsInline autoPlay style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
-                    {/* :
-                            null} */}
-                    <video ref={myVideoRef} playsInline autoPlay muted style={{ width: '200px', height: '150px', border: "2px solid #fff" }}></video>
+                <div className="flex justify-center rounded-md border border-gray-500 p-3 mb-10 h-3/4 w-full">
+                    {callAccepted && !callEnded ?
+                        <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-400 rounded-lg shadow-sm'></video>
+                        :
+                        null}
+                    <video ref={myVideoRef} playsInline autoPlay muted className='border border-gray-400 rounded-lg shadow-sm'></video>
                 </div>
 
 

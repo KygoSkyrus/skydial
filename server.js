@@ -74,56 +74,17 @@ io.on('connection', (socket) => {
   })
   // SIMPLE PEER APPROACH
 
-  socket.on('join-room', ({ userId, dialId, offer }) => {
+  socket.on('join-room', ({  dialId,name }) => {
     //to join a user to a room
 
-    console.log('___user', userId, dialId)
+    console.log('___user',  dialId)
     socket.join(dialId)
 
-    socket.to(dialId).emit("user:joined", { id: socket.id })
+    socket.to(dialId).emit("user:joined", { id: socket.id, name })
     // io.to(dialId).emit("user:joined", { id: socket.id });
     // io.to(socket.id).emit("room:join", {userId,dialId});// can sent msg direct to a socket by using its socket it
   })
 
-  socket.on('offer:req', ({ offer, to }) => {
-    console.log('+++offer_Req', offer, to)
-    socket.to(to).emit("offer_recieved", {
-      from: socket.id,
-      offer,
-      to
-    });
-  })
-  // NOTE: use io to emit to a specific socket
-  socket.on('offer_accepted', ({ answer, to }) => {
-    console.log('offer_accepted', answer, to);
-    io.to(to).emit("ressss", {
-      from: socket.id,
-      answer: answer,
-      to
-    });
-    // socket.to(to).emit("offer_resolved", {
-    //   from: socket.id,
-    //   answer,
-    // });
-  })
-
-  socket.on('nego_req', ({ negoOffer, to }) => {
-    console.log('nego_req', negoOffer, to);
-    io.to(to).emit("nego_req", {
-      from: socket.id,
-      offer: negoOffer,
-      to
-    });
-  })
-
-  socket.on('nego_res', ({ negoRes, to }) => {
-    console.log('nego_res', negoRes, to);
-    io.to(to).emit("nego_res", {
-      from: socket.id,
-      answer: negoOffer,
-      to
-    });
-  })
 
 
 
