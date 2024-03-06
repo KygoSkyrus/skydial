@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from 'uuid';
 import Peer from "simple-peer"
@@ -7,18 +7,22 @@ import Peer from "simple-peer"
 
 
 
-const socket = io('http://localhost:3006', { autoConnect: false }); // getting this out of the compoments bvcz when it was in,,it used to create a new seocket on every rerender
+// const socket = io('http://localhost:3006', { autoConnect: false }); // getting this out of the compoments bvcz when it was in,,it used to create a new seocket on every rerender
 
-//listens to every socket events
-socket.onAny((event, ...args) => {
-    // console.log('triggered event :- ', event, args);
-});
+// //listens to every socket events
+// socket.onAny((event, ...args) => {
+//     // console.log('triggered event :- ', event, args);
+// });
 
 
 
-const DialPage = () => {
+const DialPage = ({ socket }) => {
     const { dialId } = useParams();
-    console.log("maychhc", dialId)
+
+    const location = useLocation();
+    const hasUserJoined = location.state?.hasUserJoined;
+    const myName = location.state?.myName;
+    console.log("location.state", location.state)
 
     const [localStream, setLocalStream] = useState(null);
     const [mySocketId, setMySocketId] = useState(null);
@@ -26,9 +30,8 @@ const DialPage = () => {
     const [receivingCall, setReceivingCall] = useState(false)
     const [caller, setCaller] = useState("")//chnage to callerId 
     const [callerSignal, setCallerSignal] = useState()
-    const [name, setName] = useState("")//chnage to callerName
+    const [callerName, setCallerName] = useState("")//chnage to callerName
     const [callAccepted, setCallAccepted] = useState(false)
-    const [idToCall, setIdToCall] = useState("")
     const [callEnded, setCallEnded] = useState(false)
     const connectionRef = useRef()
 
@@ -46,7 +49,7 @@ const DialPage = () => {
             setLocalStream(stream);
             myVideoRef.current.srcObject = stream;
         }
-        // startCall()
+        startCall()
         // const uId = uuidv4();
 
 
@@ -57,12 +60,16 @@ const DialPage = () => {
             // console.log('connetxttxtxtx',socket.id)//gives the socket it
         });
 
+        // if (hasUserJoined) {
+        //     callUser();
+        // }
+
         // socket.emit('join-room', { userId: uId, dialId })
         socket.on("on:connection", handleConnection);
         socket.on("callUser", (data) => {
             setReceivingCall(true)
             setCaller(data.from)
-            setName(data.name)
+            setCallerName(data.name)
             setCallerSignal(data.signal)
         })
 
@@ -79,6 +86,10 @@ const DialPage = () => {
         console.log(`handleUserJoined____Email ${socketId} joined room`);
         setMySocketId(socketId)
         // setCalleeId(id);
+        if (hasUserJoined) {
+            console.log('about to run calluser', dialId)
+            callUser(dialId);
+        }
     };
 
     const answerCall = () => {
@@ -110,7 +121,7 @@ const DialPage = () => {
                 userToCall: id,
                 signalData: data,
                 from: mySocketId,
-                name: name
+                name: myName
             })
         })
         peer.on("stream", (stream) => {
@@ -149,12 +160,12 @@ const DialPage = () => {
             <div className='p-8 dark bg-slate-950 bg-zinc-950 flex flex-col justify-center items-center h-dvh text-purple-600 '>
 
                 <div className="flex justify-center rounded-md border border-gray-500 p-3 mb-10 h-3/4 w-full">
-                    {callAccepted && !callEnded ?
-                        <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-400 rounded-lg shadow-sm'></video>
-                        :
-                        null}
                     <div className='w-full h-full relative'>
-                        <video ref={myVideoRef} playsInline autoPlay muted className='w-full h-full border border-gray-400 rounded-lg shadow-sm'></video>
+                        {callAccepted && !callEnded ?
+                            <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-400 rounded-lg shadow-sm'></video>
+                            :
+                            null}
+                        <video ref={myVideoRef} playsInline autoPlay muted className={`w-full h-full border border-gray-400 rounded-lg shadow-sm`}></video>
 
                         <div className='w-full absolute bottom-4 flex justify-center items-center gap-3'>
                             <section className='border hover:border-gray-900 border-gray-500 text-white p-2 cursor-pointer rounded-2xl px-3'>
@@ -189,10 +200,7 @@ const DialPage = () => {
 
                 <div>
 
-                    <div>
-                        <input className='py-2 px-3 rounded-md focus:outline-none border focus:border-purple-500' type='text' onChange={e => setName(e.target.value)} value={name} placeholder='your name' />
 
-                    </div>
 
                     <div className="call-button">
                         {callAccepted && !callEnded ? (
@@ -200,23 +208,19 @@ const DialPage = () => {
                                 End Call
                             </button>
                         ) : (
-                            <button color="primary" aria-label="call" onClick={() => callUser(idToCall)}>
+                            <button color="primary" aria-label="call" onClick={() => callUser(dialId)}>
                                 call
                             </button>
                         )}
-                        {idToCall}
+                        {dialId}
                     </div>
-                    <div><button onClick={e => navigator.clipboard.writeText(mySocketId)}>Share call url</button></div>
 
-                    <div>
-                        <input type='text' placeholder='enter caller id' value={idToCall}
-                            onChange={(e) => setIdToCall(e.target.value)} />
-                    </div>
+
 
                     <div>
                         {receivingCall && !callAccepted ? (
                             <div className="caller">
-                                <h1 >{name} is calling...</h1>
+                                <h1 >{callerName} is calling...</h1>
                                 <button variant="contained" color="primary" onClick={answerCall}>
                                     Answer
                                 </button>
@@ -224,6 +228,11 @@ const DialPage = () => {
                         ) : null}
                     </div>
 
+                </div>
+
+                <div className="flex justify-between p-2 w-full text-white">
+                    <button className='bg-violet-500 px-4 py-2 rounded-xl'>{myName}</button>
+                    <button onClick={e => navigator.clipboard.writeText(mySocketId)}>Invite people</button>
                 </div>
 
                 {/* <div>
