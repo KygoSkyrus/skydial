@@ -49,7 +49,7 @@ const DialPage = ({ socket }) => {
             setLocalStream(stream);
             myVideoRef.current.srcObject = stream;
         }
-        startCall()
+        // startCall()
         // const uId = uuidv4();
 
 
@@ -159,7 +159,7 @@ const DialPage = ({ socket }) => {
         <>
             <div className='p-8 dark bg-slate-950 bg-zinc-950 flex flex-col justify-center items-center h-dvh text-purple-600 '>
 
-                <div className="flex justify-center rounded-md border border-gray-500 p-3 mb-10 h-3/4 w-full">
+                <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-3 mb-10 h-3/4 w-full">
                     <div className='w-full h-full relative'>
                         {callAccepted && !callEnded ?
                             <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-400 rounded-lg shadow-sm'></video>
@@ -193,6 +193,20 @@ const DialPage = ({ socket }) => {
                         </div>
                     </div>
 
+                    <div className='flex flex-col border border-gray-500 rounded-md min-w-80 w-1/4 h-full'>
+                        <header className='bg-slate-900 p-4 w-full rounded-t-md border-b border-b-gray-500 text-gray-400'>DG</header>
+
+                        <div className='h-auto flex-grow p-3'>
+                            <section className='bg-gray-700 text-gray-300 px-4 py-3 rounded-3xl rounded-br-sm w-fit'>Hello!!!</section>
+                            
+                        </div>
+
+                        <div className='flex'>
+                            <input type='text' value={msg} onChange={e => setMsg(e.target.value)} className='w-full rounded-md focus:ring focus:ri dark:border-gray-700 p-3' />
+                            <button onClick={sendMsg} className='py-2 px-4 font-semibold rounded dark:bg-violet-400 dark:text-gray-900'>Send</button>
+                        </div>
+
+                    </div>
 
                 </div>
 
