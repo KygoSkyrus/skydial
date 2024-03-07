@@ -22,7 +22,7 @@ const DialPage = ({ socket }) => {
     const location = useLocation();
     const hasUserJoined = location.state?.hasUserJoined;
     const myName = location.state?.myName;
-    console.log("location.state", location.state)
+    // console.log("location.state", location.state)
 
     const [localStream, setLocalStream] = useState(null);
     const [mySocketId, setMySocketId] = useState(null);
@@ -38,8 +38,10 @@ const DialPage = ({ socket }) => {
 
 
     const [msg, setMsg] = useState("")
+    const [msgList, setMsgList] = useState([])
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
+    const chatBody = useRef()
 
     // SHOW caller's video when he starts a call
     useEffect(() => {
@@ -49,7 +51,7 @@ const DialPage = ({ socket }) => {
             setLocalStream(stream);
             myVideoRef.current.srcObject = stream;
         }
-        // startCall()
+        startCall()
         // const uId = uuidv4();
 
 
@@ -60,24 +62,20 @@ const DialPage = ({ socket }) => {
             // console.log('connetxttxtxtx',socket.id)//gives the socket it
         });
 
-        // if (hasUserJoined) {
-        //     callUser();
-        // }
+
 
         // socket.emit('join-room', { userId: uId, dialId })
         socket.on("on:connection", handleConnection);
-        socket.on("callUser", (data) => {
-            setReceivingCall(true)
-            setCaller(data.from)
-            setCallerName(data.name)
-            setCallerSignal(data.signal)
-        })
+        socket.on("call:incoming", handleIncomingCall)
 
         socket.on("msg", recievedMsg)
 
         return () => {
             socket.disconnect();
             socket.off("on:connection", handleConnection);
+            socket.off("call:incoming", handleIncomingCall)
+
+            socket.off("msg", recievedMsg)
         };
 
     }, [])
@@ -88,9 +86,16 @@ const DialPage = ({ socket }) => {
         // setCalleeId(id);
         if (hasUserJoined) {
             console.log('about to run calluser', dialId)
-            callUser(dialId);
+            // callUser(dialId);
         }
     };
+
+    const handleIncomingCall = (data) => {
+        setReceivingCall(true)
+        setCaller(data.from)
+        setCallerName(data.name)
+        setCallerSignal(data.signal)
+    }
 
     const answerCall = () => {
         setCallAccepted(true)
@@ -137,15 +142,25 @@ const DialPage = ({ socket }) => {
 
 
     const sendMsg = () => {
-        socket.emit("msg", { msg, to: dialId })
+        const to = dialId === "initiator" ? caller : dialId
+        console.log('sendmsg', to)
+        socket.emit("msg", { msg, to, from: mySocketId })
+        // chatBody.current.append()
+        // setMsgList([...msgList, { from: mySocketId, msg }])
+        setMsgList(prevState => [...prevState, { from: mySocketId, msg }])
+        setMsg('')
     }
 
     const recievedMsg = (data) => {
         console.log('data', data)
-        const list = document.querySelector('.list')
-        const newItem = document.createElement('li');
-        newItem.textContent = data.msg;
-        list.append(newItem)
+        // const list = document.querySelector('.list')
+        // const newItem = document.createElement('li');
+        // newItem.textContent = data.msg;
+        // list.append(newItem)
+
+        // setMsgList([...msgList, { from: data.from, msg: data.msg }])
+        setMsgList(prevState => [...prevState, { from: data.from, msg: data.msg }])
+
     }
 
 
@@ -162,17 +177,16 @@ const DialPage = ({ socket }) => {
                 <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-3 mb-10 h-3/4 w-full">
                     <div className='w-full h-full relative'>
                         {callAccepted && !callEnded ?
-                            <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-400 rounded-lg shadow-sm'></video>
+                            <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-500 rounded-lg shadow-sm w-full h-full'></video>
                             :
                             null}
-                        <video ref={myVideoRef} playsInline autoPlay muted className={`w-full h-full border border-gray-400 rounded-lg shadow-sm`}></video>
+                        <video ref={myVideoRef} playsInline autoPlay muted className={`border border-gray-500 rounded-lg shadow-sm ${callAccepted && !callEnded ? 'w-1/4 absolute right-4 bottom-4 shadow-md' : 'w-full h-full'}`}></video>
 
                         <div className='w-full absolute bottom-4 flex justify-center items-center gap-3'>
                             <section className='border hover:border-gray-900 border-gray-500 text-white p-2 cursor-pointer rounded-2xl px-3'>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
                                 </svg>
-
                             </section>
 
                             <section className='border hover:border-gray-900 border-gray-500 text-white p-2 cursor-pointer rounded-2xl px-3'>
@@ -193,21 +207,38 @@ const DialPage = ({ socket }) => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col border border-gray-500 rounded-md min-w-80 w-1/4 h-full'>
-                        <header className='bg-slate-900 p-4 w-full rounded-t-md border-b border-b-gray-500 text-gray-400'>DG</header>
+                    {callAccepted && !callEnded &&
+                        <div className='flex flex-col border border-gray-500 rounded-md min-w-80 w-1/4 h-full'>
+                            <header className='bg-slate-900 p-4 flex w-full rounded-t-md border-b border-b-gray-500 text-gray-400'>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 me-2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                                </svg>
+                                <span>DG</span>
+                            </header>
 
-                        <div className='h-auto flex-grow p-3'>
-                            <section className='bg-gray-700 text-gray-300 px-4 py-3 rounded-3xl rounded-br-sm w-fit'>Hello!!!</section>
-                            
+                            <div className='chat_body h-auto flex-grow p-3 flex flex-col gap-2 overflow-y-auto' ref={chatBody}>
+                                {msgList?.length > 0 ?
+                                    msgList?.map((x, i) =>
+                                        <section key={i} className={`bg-gray-700 text-gray-300 px-3 py-2 rounded-3xl w-fit break-all ${x.from === mySocketId ? 'self-end rounded-br-sm' : 'rounded-bl-sm bg-gray-500'}`} style={{ maxWidth: "80%" }}>
+                                            {x.msg}
+                                        </section>
+                                    )
+                                    :
+                                    <section className='text-center text-gray-500 w-fit m-auto py-3 px-5 border border-gray-600 rounded-2xl relative msgIcon'>start messaging</section>
+                                }
+                            </div>
+
+                            <div className='flex'>
+                                <input type='text' value={msg} onChange={e => setMsg(e.target.value)} className='w-full rounded-l-md dark:border-gray-700 p-3 hover:border-none hover:outline-none focus:outline-none text-gray-950' placeholder='type...' onKeyUp={e => e.key === "Enter" && sendMsg()} />
+                                <button onClick={sendMsg} className='py-2 px-3 font-semibold rounded-r dark:bg-violet-400 dark:text-gray-900'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white send">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                    </svg>
+                                </button>
+                            </div>
+
                         </div>
-
-                        <div className='flex'>
-                            <input type='text' value={msg} onChange={e => setMsg(e.target.value)} className='w-full rounded-md focus:ring focus:ri dark:border-gray-700 p-3' />
-                            <button onClick={sendMsg} className='py-2 px-4 font-semibold rounded dark:bg-violet-400 dark:text-gray-900'>Send</button>
-                        </div>
-
-                    </div>
-
+                    }
                 </div>
 
 
@@ -222,7 +253,7 @@ const DialPage = ({ socket }) => {
                                 End Call
                             </button>
                         ) : (
-                            <button color="primary" aria-label="call" onClick={() => callUser(dialId)}>
+                            <button color="primary" aria-label="call" className='bg-gray-700 p-2 me-4 rounded' onClick={() => callUser(dialId)}>
                                 call
                             </button>
                         )}

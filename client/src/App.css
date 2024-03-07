@@ -2,13 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+body {
   /* padding: 0;
   margin: 0;
   box-sizing: border-box;
   background-color: #000;
   color: #fff; */
 }
+
+::-webkit-scrollbar {
+  width: 3px;
+  /* display: none; */
+}
+
+::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #696969b8;
+}
+
 ::backdrop {
   background-image: linear-gradient(
     45deg,
@@ -20,4 +34,22 @@ body{
   background: #000000bd;
   opacity: 0.75;
   cursor: pointer;
+}
+
+.send {
+  transform: rotate(330deg);
+}
+
+.msgIcon::after {
+  content: "";
+  width: 13px;
+  height: 13px;
+  position: absolute;
+  bottom: -6px;
+  right: 20px;
+  background: #09090b;
+  border: 1px solid #4b5563;
+  border-top: 4px solid #09090b;
+  border-right: 4px solid #09090b;
+  transform: rotate(315deg);
 }
