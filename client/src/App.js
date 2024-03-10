@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Homepage from './Homepage';
 import DialPage from './DialPage'
+import PageNotFound from './PageNotFound'
 import { useEffect, useState } from 'react';
 import { io } from "socket.io-client";
 
@@ -10,17 +11,20 @@ const socket = io('http://localhost:3006', { autoConnect: false }); // getting t
 
 //listens to every socket events
 socket.onAny((event, ...args) => {
-    // console.log('triggered event :- ', event, args);
+  // console.log('triggered event :- ', event, args);
 });
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
+      <BrowserRouter>
         <Routes>
-          <Route path='/' exact element={<Homepage socket={socket}/>} />
+          <Route path='/' exact element={<Homepage socket={socket} />} />
           <Route path='/dial/:dialId' exact element={<DialPage socket={socket} />} />
+          <Route path='*' exact element={<PageNotFound socket={socket} />} />
         </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </>
   )
 }
 

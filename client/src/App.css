@@ -31,13 +31,23 @@ body {
     dodgerblue,
     green
   );
-  background: #000000bd;
+  background: #000000d4;
+  background-image: linear-gradient(45deg, #1d171d, #362e3d, #1f2124, #1f271f);
   opacity: 0.75;
   cursor: pointer;
 }
 
-.send {
-  transform: rotate(330deg);
+
+.mic::after {
+  content: "";
+  width: 1.7px;
+  height: 26px;
+  /* position: absolute; */
+  top: -1px;
+  right: 11px;
+  background: #f6f6f6;
+  border-radius: 6px;
+  rotate: 316deg;
 }
 
 .msgIcon::after {
@@ -52,4 +62,75 @@ body {
   border-top: 4px solid #09090b;
   border-right: 4px solid #09090b;
   transform: rotate(315deg);
+}
+
+.online_dot::after {
+  top: 3px;
+  right: 1px;
+  box-shadow: 0 0 10px #7dff7d;
+
+  animation-name: move, scale, rotate;
+  animation-duration: 4s, 4s, 4s;
+  animation-iteration-count: infinite, infinite, infinite;
+  animation-timing-function: ease-in-out, linear, linear;
+}
+
+@keyframes move {
+  0% {
+    right: 0px;
+    top: 3px;
+  }
+  70% {
+    right: 16px;
+    top: 18px;
+  }
+  100% {
+    right: 0px;
+    top: 3px;
+  }
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  32% {
+    transform: scale(0.4);
+    animation-timing-function: ease-in;
+  }
+  70% {
+    transform: scale(1);
+    animation-timing-function: ease-in;
+  }
+  75% {
+    transform: scale(1.2);
+    animation-timing-function: ease-in-out;
+  }
+  /* 86% {
+    transform: scale(2);
+  } */
+  98% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    background-position: 0px;
+  }
+  100% {
+    background-position: 190px;
+  }
+}
+
+.send {
+  transform: rotate(330deg);
+}
+
+#invite_dialog,
+#call_dialog{
+  box-shadow: 0px 4px 4px 1px #000000a1;
 }

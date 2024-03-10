@@ -2,15 +2,26 @@
 
 - strict mode in react {whats the point of running useeeffect an extra time, how does it help is recognisizng bugs}
 - [hot module reloading](https://webpack.js.org/concepts/hot-module-replacement/) 
+- create a js for ttoltip permanent 
 
+
+# done
+- turn off audio or camera while on call
+
+
+# things to do
+- add deploy code on server
+
+- create logo
+- add description favico
+- on call end show proper msg and either send user to home page or clear everything
+- emit an event to the user that user has left the call and then end the remote stream,, setevery neccessary state off
+- add popup for answer call option
+- add a notificatio for user when he recives a msg and his chat panel is off
 
 - whenever anyon other than user itself joins the room, start the call (run the calluser function)
-- either from main page or from dialpage,, a popup should appear for user's name
 
-- currently there is a room system,,
-- check if the room systems works for group video call,,
-  if not then remove the room system,
-  and just do the calls base on socket it and there will be only one on one calling
+
 
 # Flow 
 - **create a call**: 
