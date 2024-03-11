@@ -4,6 +4,7 @@
   "description": "a video chat application by kygoskyrus",
   "main": "server.js",
   "scripts": {
+    "build": "",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server",
     "dev": "nodemon server"
