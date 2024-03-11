@@ -34,14 +34,14 @@ const DialPage = ({ socket }) => {
     const [mySocketId, setMySocketId] = useState(null);
 
     const [receivingCall, setReceivingCall] = useState(false)
-    const [caller, setCaller] = useState("")//chnage to callerId 
+    const [callerId, setCallerId] = useState("")//chnage to callerId 
     const [callerSignal, setCallerSignal] = useState()
     const [callerName, setCallerName] = useState("user 77")//defaults to empty
     const [callAccepted, setCallAccepted] = useState(false)//defaults to false
     const [callEnded, setCallEnded] = useState(false)
     const connectionRef = useRef()
 
-
+const [callAction,setCallAction]=useState('')
 
     const [msg, setMsg] = useState("")
     const [msgList, setMsgList] = useState([])
@@ -83,6 +83,8 @@ const DialPage = ({ socket }) => {
         // socket.emit('join-room', { userId: uId, dialId })
         socket.on("on:connection", handleConnection);
         socket.on("call:incoming", handleIncomingCall)
+        socket.on("call:declined", handleDeclinedCall)
+        
 
         socket.on("msg", recievedMsg)
 
@@ -108,9 +110,21 @@ const DialPage = ({ socket }) => {
 
     const handleIncomingCall = (data) => {
         setReceivingCall(true)
-        setCaller(data.from)
+        setCallerId(data.from)
         setCallerName(data.name)
         setCallerSignal(data.signal)
+    }
+
+    const handleDeclinedCall = (data) => {
+        // notification to user that his req is declined
+        console.log('call is declined')
+        setCallAction('call_declined')
+        document.getElementById('comms_dialog').showModal() 
+    }
+
+    const declineCall = () => {
+        socket.emit("call:declined", { to: callerId, from: mySocketId, name:myName })
+        document.getElementById("comms_dialog")?.close(); // closing dialog
     }
 
     const answerCall = () => {
@@ -122,7 +136,7 @@ const DialPage = ({ socket }) => {
         })
         newPeer.on("signal", (data) => {
             socket.emit("answerCall", {
-                signal: data, to: caller, name: myName
+                signal: data, to: callerId, name: myName
             })
         })
         newPeer.on("stream", (stream) => {
@@ -131,6 +145,8 @@ const DialPage = ({ socket }) => {
 
         newPeer.signal(callerSignal)
         connectionRef.current = newPeer
+
+        document.getElementById("comms_dialog")?.close() // closing dialog
     }
 
     const callUser = (id) => {
@@ -162,7 +178,7 @@ const DialPage = ({ socket }) => {
 
     const sendMsg = () => {
         if (msg?.trim()) {
-            const to = dialId === "initiator" ? caller : dialId
+            const to = dialId === "initiator" ? callerId : dialId
             // console.log('sendmsg', to)
             socket.emit("msg", { msg, to, from: mySocketId })
             // chatBody.current.append()
@@ -220,11 +236,12 @@ const DialPage = ({ socket }) => {
         }
     };
 
-    useEffect(()=>{
-        if(!(receivingCall && !callAccepted) ){
-            document.getElementById('incomingCall_dialog').showModal()
+    useEffect(() => {
+        if ((receivingCall && !callAccepted)) {
+            setCallAction('call_incoming')
+            document.getElementById('comms_dialog').showModal()
         }
-    },[receivingCall])
+    }, [receivingCall])
 
     return (
         <>
@@ -329,7 +346,7 @@ const DialPage = ({ socket }) => {
 
 
 
-                {/* User/Dial Details */}
+                {/* User 'n' Dial Details */}
                 <div className="flex flex-col sm:flex-row gap-2 justify-between p-2 w-full text-white">
                     {
                         callAccepted && !callEnded &&
@@ -356,7 +373,7 @@ const DialPage = ({ socket }) => {
 
             </div>
             <InviteDiaglog mySocketId={socket.id} />
-            <IncomingCallDIalog caller={callerName} answerCall={answerCall} />
+            <IncomingCallDIalog callAction={callAction} caller={callerName} answerCall={answerCall} declineCall={declineCall} />
             <Modal action={"set_name"} setName={setMyName} socketId={socket.id} />
         </>
     );

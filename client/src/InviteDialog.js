@@ -1,6 +1,7 @@
 import React from 'react'
 import { SocialIcon } from 'react-social-icons'
 import { EmailShareButton, FacebookShareButton, LineShareButton, PinterestShareButton, RedditShareButton, TelegramShareButton, TwitterShareButton, WhatsappShareButton, LineIcon } from "react-share"
+import GetSVGIcon from './GetSVGIcon';
 
 const InviteDiaglog = ({ mySocketId }) => {
 
@@ -26,43 +27,44 @@ const InviteDiaglog = ({ mySocketId }) => {
             </div>
 
             <div className='flex flex-wrap justify-center gap-3 p-3'>
-                <WhatsappShareButton url={window.location.href} onClick={e => navigator.clipboard.writeText(mySocketId)}>
-                    <SocialIcon network='url' />
-                </WhatsappShareButton>
 
-                <WhatsappShareButton url={window.location.href}>
+                <section className='w-[50px] h-[50px] rounded-full grid place-items-center border border-gray-300 cursor-pointer hover:scale-105' onClick={() => navigator.clipboard.writeText(mySocketId)} title='copy url'>
+                    <GetSVGIcon name="link" />
+                </section>
+
+                <WhatsappShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='whatsapp' />
                 </WhatsappShareButton>
 
-                <FacebookShareButton url={window.location.href}>
+                <FacebookShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='facebook' />
                 </FacebookShareButton>
 
-                <TelegramShareButton url={window.location.href} >
+                <TelegramShareButton url={window.location.href} className="hover:scale-105" >
                     <SocialIcon network='telegram' />
                 </TelegramShareButton>
 
-                <EmailShareButton url={window.location.href}>
+                <EmailShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='email' />
                 </EmailShareButton>
 
-                <LineShareButton url={window.location.href}>
+                <LineShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='linkedin' />
                 </LineShareButton>
 
-                <PinterestShareButton url={window.location.href}>
+                <PinterestShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='pinterest' />
                 </PinterestShareButton>
 
-                <TwitterShareButton url={window.location.href}>
+                <TwitterShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='x' />
                 </TwitterShareButton>
 
-                <TwitterShareButton url={window.location.href}>
+                <TwitterShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='twitch' />
                 </TwitterShareButton>
 
-                <RedditShareButton url={window.location.href}>
+                <RedditShareButton url={window.location.href} className="hover:scale-105">
                     <SocialIcon network='reddit' />
                 </RedditShareButton>
             </div>

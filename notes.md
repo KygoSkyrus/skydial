@@ -7,10 +7,12 @@
 
 # done
 - turn off audio or camera while on call
+- add deploy code on server
 
 
 # things to do
-- add deploy code on server
+- add the timout to send to homepage whenever needed... i.e. on call declined/end
+- add message popup for events like new messages, call endeed
 
 - create logo
 - add description favico
@@ -18,9 +20,10 @@
 - emit an event to the user that user has left the call and then end the remote stream,, setevery neccessary state off
 - add popup for answer call option
 - add a notificatio for user when he recives a msg and his chat panel is off
+- add the notification popupp for new messages.
 
 - whenever anyon other than user itself joins the room, start the call (run the calluser function)
-
+- on call end, technincally its not able to reconnect, maybe socket is deleted,, refresh workd though,,, redirect user to homepage when call ends.
 
 
 # Flow 

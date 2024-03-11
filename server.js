@@ -9,12 +9,18 @@ const app = express();
 const server = http.createServer(app);
 const io = socket(server);
 
-//set static folder
-app.use(express.static(path.join(__dirname, "public")));
-
 app.use(bodyParser.json())
 
-const port = process.env.PORT || 4000;
+
+//set static folder
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
 
 
 
@@ -71,6 +77,10 @@ io.on('connection', (socket) => {
 
   socket.on("answerCall", (data) => {
     io.to(data.to).emit("callAccepted", {signal:data.signal, name:data.name})
+  })
+
+  socket.on("call:declined", (data) => {
+    io.to(data.to).emit("call:declined", {from:data.from, name:data.name})
   })
   // SIMPLE PEER APPROACH
 
@@ -214,5 +224,5 @@ io.on('connection', (socket) => {
 
 });
 
-
+const port = process.env.PORT || 4000;
 server.listen(port, () => console.log(`server is running at ${port}`));
