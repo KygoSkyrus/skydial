@@ -41,7 +41,7 @@ const DialPage = ({ socket }) => {
     const [callEnded, setCallEnded] = useState(false)
     const connectionRef = useRef()
 
-const [callAction,setCallAction]=useState('')
+    const [callAction, setCallAction] = useState('')
 
     const [msg, setMsg] = useState("")
     const [msgList, setMsgList] = useState([])
@@ -84,7 +84,7 @@ const [callAction,setCallAction]=useState('')
         socket.on("on:connection", handleConnection);
         socket.on("call:incoming", handleIncomingCall)
         socket.on("call:declined", handleDeclinedCall)
-        
+
 
         socket.on("msg", recievedMsg)
 
@@ -119,11 +119,11 @@ const [callAction,setCallAction]=useState('')
         // notification to user that his req is declined
         console.log('call is declined')
         setCallAction('call_declined')
-        document.getElementById('comms_dialog').showModal() 
+        document.getElementById('comms_dialog').showModal()
     }
 
     const declineCall = () => {
-        socket.emit("call:declined", { to: callerId, from: mySocketId, name:myName })
+        socket.emit("call:declined", { to: callerId, from: mySocketId, name: myName })
         document.getElementById("comms_dialog")?.close(); // closing dialog
     }
 
@@ -319,6 +319,9 @@ const [callAction,setCallAction]=useState('')
                 </div>
 
 
+                <div className="toast">
+                    User 84 has sent a text
+                </div>
 
 
 

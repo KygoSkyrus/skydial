@@ -30,7 +30,7 @@ const Modal = ({ action, socketId, setName }) => {
 
     return (
         <>
-            <dialog ref={dialogRef} id='call_dialog' className="modal lg:w-1/2 md:w-3/4 bg-gray-900 rounded-3xl " onClick={(e) => handleClick(e)}>
+            <dialog ref={dialogRef} id='call_dialog' className="modal lg:w-1/2 md:w-3/4 xl:w-5/12 bg-gray-900 rounded-3xl " onClick={(e) => handleClick(e)}>
                 {action !== "set_name" &&
                     <form method="dialog">
                         <button className="btn btn-sm btn-circle btn-ghost absolute right-3 top-2 text-gray-500">✕</button>

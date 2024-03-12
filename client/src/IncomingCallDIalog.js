@@ -23,16 +23,15 @@ const IncomingCallDIalog = ({ callAction, caller, answerCall, declineCall }) => 
     useEffect(() => {
         // this should run when the event is fired ,, as being inside effect it runs at the very beginning
         if (callAction === "call_declined") {
-            console.log('insite ueee')
+            console.log('inside ue')
             document.querySelector('.progress').classList.remove('hidden')
             setTimeout(() => {
                 navigate("/")
                 console.log('timeoutt')
                 console.log('redirect to home')
-            }, 8000);
+            }, 10000);
         }
-
-    }, [])
+    }, [callAction])
 
     return (
         <dialog id='comms_dialog' className='dark dark:bg-gray-900 dark:text-gray-100 lg:w-1/2 md:w-3/4 rounded-3xl px-6 py-16 sm:px-12 md:px-16 xl:col-span-2' onClick={(e) => handleClick(e)}>
