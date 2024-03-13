@@ -28,43 +28,43 @@ const InviteDiaglog = ({ mySocketId }) => {
 
             <div className='flex flex-wrap justify-center gap-3 p-3'>
 
-                <section className='w-[50px] h-[50px] rounded-full grid place-items-center border border-gray-300 cursor-pointer hover:scale-105' onClick={() => navigator.clipboard.writeText(mySocketId)} title='copy url'>
+                <section className='w-[50px] h-[50px] rounded-full grid place-items-center border border-gray-300 cursor-pointer hover:scale-105 relative link_copy' onClick={() => navigator.clipboard.writeText(window.location.host + `/dial/${mySocketId}`)} title='copy url'>
                     <GetSVGIcon name="link" />
                 </section>
 
-                <WhatsappShareButton url={window.location.href} className="hover:scale-105">
+                <WhatsappShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='whatsapp' />
                 </WhatsappShareButton>
 
-                <FacebookShareButton url={window.location.href} className="hover:scale-105">
+                <FacebookShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='facebook' />
                 </FacebookShareButton>
 
-                <TelegramShareButton url={window.location.href} className="hover:scale-105" >
+                <TelegramShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105" >
                     <SocialIcon network='telegram' />
                 </TelegramShareButton>
 
-                <EmailShareButton url={window.location.href} className="hover:scale-105">
+                <EmailShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='email' />
                 </EmailShareButton>
 
-                <LineShareButton url={window.location.href} className="hover:scale-105">
+                <LineShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='linkedin' />
                 </LineShareButton>
 
-                <PinterestShareButton url={window.location.href} className="hover:scale-105">
+                <PinterestShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='pinterest' />
                 </PinterestShareButton>
 
-                <TwitterShareButton url={window.location.href} className="hover:scale-105">
+                <TwitterShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='x' />
                 </TwitterShareButton>
 
-                <TwitterShareButton url={window.location.href} className="hover:scale-105">
+                <TwitterShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='twitch' />
                 </TwitterShareButton>
 
-                <RedditShareButton url={window.location.href} className="hover:scale-105">
+                <RedditShareButton url={window.location.host + `/dial/${mySocketId}`} className="hover:scale-105">
                     <SocialIcon network='reddit' />
                 </RedditShareButton>
             </div>

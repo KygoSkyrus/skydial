@@ -82,6 +82,11 @@ io.on('connection', (socket) => {
   socket.on("call:declined", (data) => {
     io.to(data.to).emit("call:declined", {from:data.from, name:data.name})
   })
+
+  socket.on("call:end", (data) => {
+    console.log('call end',data)
+    io.to(data.to).emit("call:end", {from:data.from, name:data.name})
+  })
   // SIMPLE PEER APPROACH
 
   socket.on('join-room', ({  dialId,name }) => {
