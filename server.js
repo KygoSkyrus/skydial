@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("callUser", (data) => {
-    console.log('userToCall',data.userToCall)
+    console.log('userToCall',data)
     // console.log("io",io.sockets?.sockets)
     console.log('does have? to',io.sockets?.sockets?.has(data.userToCall))// checks if the user is even present
     console.log('does have? from',io.sockets?.sockets?.has(data.from))

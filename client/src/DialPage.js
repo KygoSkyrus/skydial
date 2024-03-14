@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Peer from "simple-peer"
-import Modal from './Modal';
+import Modal from './Dialogs/Modal';
 import GetSVGIcon from './GetSVGIcon';
 
 
-import InviteDiaglog from './InviteDialog';
-import CommsDialog from './CommsDialog';
+import InviteDiaglog from './Dialogs/InviteDialog';
+import CommsDialog from './Dialogs/CommsDialog';
 
 
 
@@ -15,7 +15,7 @@ const DialPage = ({ socket }) => {
     const { dialId } = useParams();
     const location = useLocation();
 
-    const hasUserJoined = location.state?.hasUserJoined;
+    // const hasUserJoined = location.state?.hasUserJoined;// not needed as directly "initiator" param is being used instead
     // let myName = location.state?.myName;
     // console.log("location.state", location.state)
     const [myName, setMyName] = useState(location.state?.myName)
@@ -26,7 +26,7 @@ const DialPage = ({ socket }) => {
     const [receivingCall, setReceivingCall] = useState(false)
     const [callerId, setCallerId] = useState("")//chnage to callerId 
     const [callerSignal, setCallerSignal] = useState()
-    const [callerName, setCallerName] = useState("user 77")//defaults to empty
+    const [callerName, setCallerName] = useState("")//defaults to empty
     const [callAccepted, setCallAccepted] = useState(false)//defaults to false
     const [callEnded, setCallEnded] = useState(false)
     const connectionRef = useRef()
@@ -92,16 +92,27 @@ const DialPage = ({ socket }) => {
     }, [])
 
     const handleConnection = (socketId) => {
-        console.log(`handleUserJoined____Email ${socketId} joined room`);
+        console.log(`handleConnection ${socketId} SOCKET CREATED`);
         setMySocketId(socketId)
         // setCalleeId(id);
-        if (hasUserJoined) {
-            console.log('about to run calluser', dialId)
-            // callUser(dialId);
-        }
+        // if (hasUserJoined) {
+        //     console.log('about to run calluser', dialId)
+        //     callUser(dialId);
+        // }
     };
 
+
+    useEffect(() => {
+        // executing call user when user's socketId is set and user has entered his name (only for joiners)
+        // if (hasUserJoined && mySocketId) {
+        if (mySocketId && myName && dialId !== "initiator") {
+            console.log('about to run calluser', dialId)
+            callUser(dialId);
+        }
+    }, [mySocketId, myName])
+
     const handleIncomingCall = (data) => {
+        console.log('handleIncomingCall',data)
         setReceivingCall(true)
         setCallerId(data.from)
         setCallerName(data.name)
@@ -124,6 +135,10 @@ const DialPage = ({ socket }) => {
     const declineCall = () => {
         socket.emit("call:declined", { to: callerId, from: mySocketId, name: myName })
         document.getElementById("comms_dialog")?.close(); // closing dialog
+        setReceivingCall(false)
+        setCallerId("")
+        setCallerName("")
+        setCallerSignal("")
     }
 
     const answerCall = () => {
@@ -202,8 +217,8 @@ const DialPage = ({ socket }) => {
             // try using only caller and dial it,, if anyone of them is true than use it
             // the problem is that when there is no initiator in url than it still uses dialid,,,whihc is obviously wring and is of not another user,,,so the solution can be is to use caller id always, and only use dialId if caller id is not there           
             const to = dialId === "initiator" ? callerId : dialId
-            console.log('callerId',callerId)
-            console.log('dialId',dialId)
+            console.log('callerId', callerId)
+            console.log('dialId', dialId)
             console.log("in sendmsg tooo")
             // console.log('sendmsg', to)
             socket.emit("msg", { msg, to, from: mySocketId })
@@ -292,7 +307,7 @@ const DialPage = ({ socket }) => {
     return (
         <>
             <div className='p-4 sm:p-8 dark bg-slate-950 bg-zinc-950 flex flex-col sm:justify-center items-center h-dvh text-purple-600 '>
-
+                {/* <h3 className='extra-bold'>SKYDIAL</h3> */}
                 <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-3 mb-10 h-dvh sm:h-3/4 w-full">
                     <div className={`w-full ${isChatPanelHidden ? 'relative h-full' : 'absolute sm:relative -z-10 sm:z-0'}`}>
 
@@ -365,30 +380,19 @@ const DialPage = ({ socket }) => {
                 </div>
 
 
-
-
-
-
-                <div className="call-button">
-                    {callAccepted && !callEnded ? (
-                        <button variant="contained" color="secondary" onClick={endCall}>
-                            End Call
-                        </button>
-                    ) : (
+                {/* <div className="call-button">
+                    {!(callAccepted && !callEnded) &&
                         <button color="primary" aria-label="call" className='bg-gray-700 p-2 me-4 rounded' onClick={() => callUser(dialId)}>
                             call
                         </button>
-                    )}
-                    {dialId}
-                </div>
-
-
+                    }
+                </div> */}
 
 
                 {/* User 'n' Dial Details */}
                 <div className="flex flex-col sm:flex-row gap-2 justify-between p-2 w-full text-white">
                     {
-                        callAccepted && !callEnded &&
+                        // callAccepted && !callEnded &&
                         <div className='flex gap-2'>
                             <section className='flex flex-grow justify-between border border-gray-500 px-4 py-2 rounded-xl overflow-hidden'>
                                 <span className='relative after:absolute after:bg-green-500 after:w-2 after:h-2 after:rounded-full online_dot'>

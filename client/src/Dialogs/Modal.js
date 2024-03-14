@@ -11,6 +11,7 @@ const Modal = ({ action, socketId, setName }) => {
 
     function handleClick(event) {
         if (event.target === dialogRef.current && action !== "set_name") {
+            console.log('dialogRef', dialogRef)
             dialogRef.current.close();
         }
     }

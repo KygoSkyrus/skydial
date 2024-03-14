@@ -105,9 +105,6 @@ body {
     transform: scale(1.2);
     animation-timing-function: ease-in-out;
   }
-  /* 86% {
-    transform: scale(2);
-  } */
   98% {
     transform: scale(1.2);
   }

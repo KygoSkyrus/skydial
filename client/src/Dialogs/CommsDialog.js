@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom';
 
 const CommsDialog = ({ callAction, caller, answerCall, declineCall }) => {
-
+ console.log('caller in dialog',caller)
 
     function handleClick(event) {
         const dialog = document.getElementById("comms_dialog");
