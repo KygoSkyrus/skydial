@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { io } from "socket.io-client";
-import { v4 as uuidv4 } from 'uuid';
+import { useLocation, useParams } from 'react-router-dom';
 import Peer from "simple-peer"
 import Modal from './Modal';
 import GetSVGIcon from './GetSVGIcon';
@@ -9,14 +7,6 @@ import GetSVGIcon from './GetSVGIcon';
 
 import InviteDiaglog from './InviteDialog';
 import CommsDialog from './CommsDialog';
-
-
-// const socket = io('http://localhost:3006', { autoConnect: false }); // getting this out of the compoments bvcz when it was in,,it used to create a new seocket on every rerender
-
-// //listens to every socket events
-// socket.onAny((event, ...args) => {
-//     // console.log('triggered event :- ', event, args);
-// });
 
 
 
@@ -210,8 +200,11 @@ const DialPage = ({ socket }) => {
     const sendMsg = () => {
         if (msg?.trim()) {
             // try using only caller and dial it,, if anyone of them is true than use it
+            // the problem is that when there is no initiator in url than it still uses dialid,,,whihc is obviously wring and is of not another user,,,so the solution can be is to use caller id always, and only use dialId if caller id is not there           
             const to = dialId === "initiator" ? callerId : dialId
-            console.log("in sendmsg", callerId, dialId)
+            console.log('callerId',callerId)
+            console.log('dialId',dialId)
+            console.log("in sendmsg tooo")
             // console.log('sendmsg', to)
             socket.emit("msg", { msg, to, from: mySocketId })
             // chatBody.current.append()

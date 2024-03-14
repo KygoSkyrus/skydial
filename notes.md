@@ -14,11 +14,19 @@
 
 # things to do
 - NOTE : ERROR: when both peers has dial id in the url,, then msg is not wokring 
-- fix the call thing on page load,, remove call button
+- fix the call thing on page load,, remove call button ... whenever anyon other than user itself joins the room, start the call (run the calluser function)
+
+- uninstall uuid
 - increase the width of dialog for mobile view
 - create logo
 - add favico
-- whenever anyon other than user itself joins the room, start the call (run the calluser function)
+- change the one liner at homepage
+
+
+
+# Scenarios
+- our only problem is when user just copies a 
+
 
 
 # Flow
