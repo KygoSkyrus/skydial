@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.4659c176.css",
-    "main.js": "/static/js/main.947d364b.js",
-    "static/media/skydial_transparent.png": "/static/media/skydial_transparent.f7c1c68f37b9b91eff6e.png",
+    "main.css": "/static/css/main.9ed94b3d.css",
+    "main.js": "/static/js/main.940cdcdb.js",
+    "static/media/skydial_logo.png": "/static/media/skydial_logo.b3ce185810fc16b73790.png",
     "index.html": "/index.html",
-    "main.4659c176.css.map": "/static/css/main.4659c176.css.map",
-    "main.947d364b.js.map": "/static/js/main.947d364b.js.map"
+    "main.9ed94b3d.css.map": "/static/css/main.9ed94b3d.css.map",
+    "main.940cdcdb.js.map": "/static/js/main.940cdcdb.js.map"
   },
   "entrypoints": [
-    "static/css/main.4659c176.css",
-    "static/js/main.947d364b.js"
+    "static/css/main.9ed94b3d.css",
+    "static/js/main.940cdcdb.js"
   ]
 }

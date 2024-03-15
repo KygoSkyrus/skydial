@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Peer from "simple-peer"
-import Modal from './Dialogs/Modal';
+
 import GetSVGIcon from './GetSVGIcon';
-
-
+import Modal from './Dialogs/Modal';
 import InviteDiaglog from './Dialogs/InviteDialog';
 import CommsDialog from './Dialogs/CommsDialog';
 
@@ -16,18 +15,16 @@ const DialPage = ({ socket }) => {
     const location = useLocation();
 
     // const hasUserJoined = location.state?.hasUserJoined;// not needed as directly "initiator" param is being used instead
-    // let myName = location.state?.myName;
-    // console.log("location.state", location.state)
     const [myName, setMyName] = useState(location.state?.myName)
 
     const [localStream, setLocalStream] = useState(null);
     const [mySocketId, setMySocketId] = useState(null);
 
     const [receivingCall, setReceivingCall] = useState(false)
-    const [callerId, setCallerId] = useState("")//chnage to callerId 
+    const [callerId, setCallerId] = useState("")
     const [callerSignal, setCallerSignal] = useState()
-    const [callerName, setCallerName] = useState("")//defaults to empty
-    const [callAccepted, setCallAccepted] = useState(false)//defaults to false
+    const [callerName, setCallerName] = useState("")
+    const [callAccepted, setCallAccepted] = useState(false)
     const [callEnded, setCallEnded] = useState(false)
     const connectionRef = useRef()
 
@@ -57,7 +54,7 @@ const DialPage = ({ socket }) => {
             document.getElementById('call_dialog')?.showModal()
         }
 
-        // startCall()
+        startCall()
         // const uId = uuidv4();
 
 
@@ -392,7 +389,7 @@ const DialPage = ({ socket }) => {
                 {/* User 'n' Dial Details */}
                 <div className="flex flex-col sm:flex-row gap-2 justify-between p-2 w-full text-white">
                     {
-                        // callAccepted && !callEnded &&
+                        callAccepted && !callEnded &&
                         <div className='flex gap-2'>
                             <section className='flex flex-grow justify-between border border-gray-500 px-4 py-2 rounded-xl overflow-hidden'>
                                 <span className='relative after:absolute after:bg-green-500 after:w-2 after:h-2 after:rounded-full online_dot'>

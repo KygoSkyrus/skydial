@@ -1,29 +1,9 @@
-# done
-
-- your name is not at the bottom on homepage
-- add scroll in view in chat
-- add the timout to send to homepage whenever needed... i.e. on call declined/end
-- add message popup for events like new messages, call endeed
-- add the url on invite people
-- on call end show proper msg and either send user to home page or clear everything
-- emit an event to the user that user has left the call and then end the remote stream,, setevery neccessary state off
-- add popup for answer call option
-- add a notificatio for user when he recives a msg and his chat panel is off
-- prgress bar width is changing as the texts width changes
-- on call end, technincally its not able to reconnect, maybe socket is deleted,, refresh workd though,,, redirect user to homepage when call ends.
-- change the one liner at homepage
-- fix the call thing on page load,, remove call button ... whenever anyon other than user itself joins the room, start the call (run the calluser function)
-- uninstall uuid
 
 # things to do
-
-- un comment the startcall func before deploying
-- clear the default states set
-- NOTE : ERROR: when both peers has dial id in the url,, then msg is not wokring // INVALID 
-
+- NOTE : ERROR: when both peers has dial id in the url,, then msg is not wokring [even if user ]// INVALID 
 - increase the width of dialog for mobile view
-- create logo
-- add favico
+- implement socket reconnection on server/client
+
 
 # Flow
 

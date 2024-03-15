@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Modal from './Dialogs/Modal';
-import GetSVGIcon from './GetSVGIcon';
-import logo from "./skydial_transparent.png"
+import logo from "./skydial_logo.png"
 
 const Homepage = ({ socket }) => {
 
@@ -16,8 +15,8 @@ const Homepage = ({ socket }) => {
     <>
       <div className='dark min-h-dvh dark:bg-gray-900 flex flex-col items-center justify-center font-thin'>
         <section className="dark:dark:bg-gray-900 dark:dark:text-gray-100 dark:bg-slate-800 flex flex-grow items-center">
-          <div className="container mx-auto flex flex-col items-center px-4 py-16 text-center md:py-32 md:px-10 lg:px-32 xl:max-w-3xl">
-            <img src={logo} alt='' width="100px" height="100px" />
+          <div className="container mx-auto flex flex-col items-center px-4 text-center md:px-10 lg:px-32 xl:max-w-3xl">
+            <img src={logo} alt='' width="200px" />
             {/* <h1 className="text-4xl font-bold leadi sm:text-5xl">SKY
               <span className="dark:dark:text-violet-400">
                 <GetSVGIcon name="phone" className='w-12 h-12 inline-block' />
