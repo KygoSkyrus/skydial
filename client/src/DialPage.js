@@ -62,7 +62,10 @@ const DialPage = ({ socket }) => {
         socket.connect();
 
         socket.on("connect", () => {
-            // console.log('connetxttxtxtx',socket.id)//gives the socket it
+            console.log('connetxttxtxtx', socket.id)//gives the socket it
+            const test = document.getElementById('test')
+            if (test)
+                test.innerHTML = socket.id;
         });
 
 
@@ -109,7 +112,7 @@ const DialPage = ({ socket }) => {
     }, [mySocketId, myName])
 
     const handleIncomingCall = (data) => {
-        console.log('handleIncomingCall',data)
+        console.log('handleIncomingCall', data)
         setReceivingCall(true)
         setCallerId(data.from)
         setCallerName(data.name)
@@ -304,6 +307,7 @@ const DialPage = ({ socket }) => {
     return (
         <>
             <div className='p-4 sm:p-8 dark bg-slate-950 bg-zinc-950 flex flex-col sm:justify-center items-center h-dvh text-purple-600 '>
+                <button id='test'></button>
                 {/* <h3 className='extra-bold'>SKYDIAL</h3> */}
                 <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-3 mb-10 h-dvh sm:h-3/4 w-full">
                     <div className={`w-full ${isChatPanelHidden ? 'relative h-full' : 'absolute sm:relative -z-10 sm:z-0'}`}>
@@ -416,6 +420,7 @@ const DialPage = ({ socket }) => {
                         <button onClick={() => document.getElementById('invite_dialog')?.showModal()} >
                             <span>Invite people</span>
                             <GetSVGIcon name="user_plus" />
+                            -id:{socket.id}
                         </button>
                     }
                 </div>
