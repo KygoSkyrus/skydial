@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Peer from "simple-peer"
@@ -8,76 +9,60 @@ import InviteDiaglog from './Dialogs/InviteDialog';
 import CommsDialog from './Dialogs/CommsDialog';
 
 
-
 const DialPage = ({ socket }) => {
 
     const { dialId } = useParams();
     const location = useLocation();
-
     // const hasUserJoined = location.state?.hasUserJoined;// not needed as directly "initiator" param is being used instead
-    const [myName, setMyName] = useState(location.state?.myName)
 
-    const [localStream, setLocalStream] = useState(null);
-    const [mySocketId, setMySocketId] = useState(null);
-
-    const [receivingCall, setReceivingCall] = useState(false)
-    const [callerId, setCallerId] = useState("")
-    const [callerSignal, setCallerSignal] = useState()
-    const [callerName, setCallerName] = useState("")
-    const [callAccepted, setCallAccepted] = useState(false)
-    const [callEnded, setCallEnded] = useState(false)
-    const connectionRef = useRef()
-
-    const [callAction, setCallAction] = useState('')
-    const [showMessageNotification, setShowMessageNotification] = useState(false)
-
-    const [msg, setMsg] = useState("")
-    const [msgList, setMsgList] = useState([])
-    const [isChatPanelHidden, setIsChatPanelHidden] = useState(true)
-    const [isCameraOn, setIsCameraOn] = useState(true)
-    const [isAudioOn, setIsAudioOn] = useState(true)
     const myVideoRef = useRef();
     const remoteVideoRef = useRef();
-    const chatBody = useRef()
+    const connectionRef = useRef();
+
+    const [myName, setMyName] = useState(location.state?.myName);
+    const [mySocketId, setMySocketId] = useState(null);
+    const [localStream, setLocalStream] = useState(null);
+    const [callerId, setCallerId] = useState(""); // caller's socket id
+    const [callerSignal, setCallerSignal] = useState(); // caller's video stream
+    const [callerName, setCallerName] = useState("");
+
+    const [receivingCall, setReceivingCall] = useState(false);
+    const [callAccepted, setCallAccepted] = useState(false);
+    const [callEnded, setCallEnded] = useState(false);
+
+    const [callAction, setCallAction] = useState(''); // actions performed throughout call
+    const [isCameraOn, setIsCameraOn] = useState(true);
+    const [isAudioOn, setIsAudioOn] = useState(true);
+    const [showMessageNotification, setShowMessageNotification] = useState(false); // when new messages are recieved
+
+    const [msg, setMsg] = useState("");
+    const [msgList, setMsgList] = useState([]);
+    const [isChatPanelHidden, setIsChatPanelHidden] = useState(true);
 
 
-
-    const startCall = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const setUserStream = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+                console.log("received accesss", stream);
+            })
+            .catch(err => console.log('eee', err));
         setLocalStream(stream);
         myVideoRef.current.srcObject = stream;
     }
-    // SHOW caller's video when he starts a call
-    useEffect(() => {
 
+    useEffect(() => {
         if (!myName) {
             document.getElementById('call_dialog')?.showModal()
         }
 
-        startCall()
-        // const uId = uuidv4();
+        setUserStream();
+        socket.connect(); // connect socket to server
 
-
-        // connectSocket();
-        socket.connect();
-
-        socket.on("connect", () => {
-            console.log('connetxttxtxtx', socket.id)//gives the socket it
-            const test = document.getElementById('test')
-            if (test)
-                test.innerHTML = socket.id;
-        });
-
-
-
-        // socket.emit('join-room', { userId: uId, dialId })
         socket.on("on:connection", handleConnection);
         socket.on("call:incoming", handleIncomingCall)
         socket.on("call:declined", handleDeclinedCall)
         socket.on("call:end", handleCallEnd)
-
-
-        socket.on("msg", recievedMsg)
+        socket.on("msg:recieved", handleRecievedMsg)
 
         return () => {
             socket.disconnect();
@@ -85,60 +70,65 @@ const DialPage = ({ socket }) => {
             socket.off("call:incoming", handleIncomingCall)
             socket.off("call:declined", handleDeclinedCall)
             socket.off("call:end", handleCallEnd)
-
-            socket.off("msg", recievedMsg)
+            socket.off("msg:recieved", handleRecievedMsg)
         };
-
     }, [])
 
-    const handleConnection = (socketId) => {
-        console.log(`handleConnection ${socketId} SOCKET CREATED`);
-        setMySocketId(socketId)
-        // setCalleeId(id);
-        // if (hasUserJoined) {
-        //     console.log('about to run calluser', dialId)
-        //     callUser(dialId);
-        // }
-    };
-
-
     useEffect(() => {
-        // executing call user when user's socketId is set and user has entered his name (only for joiners)
-        // if (hasUserJoined && mySocketId) {
+        // calling user as soon as user's socketId is set and name is not null (only for joiners)
         if (mySocketId && myName && dialId !== "initiator") {
-            console.log('about to run calluser', dialId)
             callUser(dialId);
         }
     }, [mySocketId, myName])
 
+    useEffect(() => {
+        // hide the notification badge whenever chat panel is toggled
+        setShowMessageNotification(false);
+    }, [isChatPanelHidden])
+
+    useEffect(() => {
+        // scroll the chat body to bottom on new messages
+        const chatContainer = document.querySelector('.chat_body')
+        if (chatContainer) chatContainer.scrollTop = chatContainer?.scrollHeight;
+    }, [msgList])
+
+    useEffect(() => {
+        // incoming call notification
+        if ((receivingCall && !callAccepted)) {
+            setCallAction('call_incoming')
+            document.getElementById('comms_dialog')?.showModal()
+        }
+    }, [receivingCall])
+
+
+    const handleConnection = (socketId) => {
+        setMySocketId(socketId); // sets user's socket id on successfull connnection
+    };
+
     const handleIncomingCall = (data) => {
-        console.log('handleIncomingCall', data)
-        setReceivingCall(true)
-        setCallerId(data.from)
-        setCallerName(data.name)
-        setCallerSignal(data.signal)
+        setReceivingCall(true);
+        setCallerId(data.from);
+        setCallerName(data.name);
+        setCallerSignal(data.signal);
     }
 
     const handleCallEnd = (data) => {
-        console.log('call ended')
-        setCallAction('call_end')
-        document.getElementById('comms_dialog')?.showModal()
+        setCallAction('call_end');
+        document.getElementById('comms_dialog')?.showModal();
     }
 
     const handleDeclinedCall = (data) => {
-        // notification to user that his req is declined
-        console.log('call is declined')
-        setCallAction('call_declined')
+        setCallAction('call_declined'); // notification to user that his req is declined
         document.getElementById('comms_dialog')?.showModal()
     }
 
     const declineCall = () => {
         socket.emit("call:declined", { to: callerId, from: mySocketId, name: myName })
-        document.getElementById("comms_dialog")?.close(); // closing dialog
-        setReceivingCall(false)
-        setCallerId("")
-        setCallerName("")
-        setCallerSignal("")
+        document.getElementById("comms_dialog")?.close(); // closing incoming call dialog
+        setReceivingCall(false);
+        setCallerId("");
+        setCallerName("");
+        setCallerSignal("");
     }
 
     const answerCall = () => {
@@ -158,20 +148,16 @@ const DialPage = ({ socket }) => {
         })
 
         newPeer.on("close", (data) => {
-            console.log('close answercall', data)
-            // setCallAction('call_declined')
-            // document.getElementById('comms_dialog')?.showModal()
-            // socket.emit("call:end", { to: callerId, from: mySocketId, name: myName })
+            console.log('peer closed', data)
         })
 
         newPeer.on('error', (error) => {
-            console.log('errrrbha', error)
+            console.log('peer error', error)
         })
 
         newPeer.signal(callerSignal)
         connectionRef.current = newPeer
-
-        document.getElementById("comms_dialog")?.close() // closing dialog
+        document.getElementById("comms_dialog")?.close() // closing incoming call dialog on when accepted
     }
 
     const callUser = (id) => {
@@ -192,92 +178,54 @@ const DialPage = ({ socket }) => {
             remoteVideoRef.current.srcObject = stream
         })
         socket.on("callAccepted", (data) => {
-            setCallAccepted(true)
             newPeer.signal(data.signal)
+            setCallAccepted(true)
             setCallerName(data.name)
         })
 
         newPeer.on("close", (data) => {
-            console.log('close calluser', data)
-            // setCallAction('call_declined')
-            // document.getElementById('comms_dialog')??.showModal()
-            // socket.emit("call:end", { to: callerId, from: mySocketId, name: myName })
+            console.log('peer closed', data)
         })
 
         newPeer.on('error', (error) => {
-            console.log('error', error)
+            console.log('peer error', error)
         })
 
         connectionRef.current = newPeer
     }
 
-    // NOTE : ERROR: when both peers has dial id in the url,, then msg is not wokring 
     const sendMsg = () => {
         if (msg?.trim()) {
-            // try using only caller and dial it,, if anyone of them is true than use it
-            // the problem is that when there is no initiator in url than it still uses dialid,,,whihc is obviously wring and is of not another user,,,so the solution can be is to use caller id always, and only use dialId if caller id is not there           
             const to = dialId === "initiator" ? callerId : dialId
-            console.log('callerId', callerId)
-            console.log('dialId', dialId)
-            console.log("in sendmsg tooo")
-            // console.log('sendmsg', to)
-            socket.emit("msg", { msg, to, from: mySocketId })
-            // chatBody.current.append()
-            // setMsgList([...msgList, { from: mySocketId, msg }])
+            socket.emit("msg:sent", { msg, to, from: mySocketId })
             setMsgList(prevState => [...prevState, { from: mySocketId, msg }])
-
-            // let chatContainer=document.querySelector('.chat_body')
-            // chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            // document.querySelector('.scroll_to_bottom')?.scrollIntoView({ behaviour: 'smooth' });
             setMsg('')
         }
     }
 
-    const recievedMsg = (data) => {
-        // console.log('normal', isChatPanelHidden)
+    const handleRecievedMsg = (data) => {
         setIsChatPanelHidden(prev => {
-            console.log('testtss', prev)
-            if (prev) setShowMessageNotification(true) // updatimg this state here bcz in outer scope the ischatpanelstate didn't had updated value
+            if (prev) setShowMessageNotification(true) // updatimg this state here bcz in outer scope the isChatPanelHidden state don't have updated value
             return prev
         })
-
         setMsgList(prevState => [...prevState, { from: data.from, msg: data.msg }])
     }
 
-    useEffect(() => {
-        setShowMessageNotification(false); // hide the notification badge whenever chat panel is toggled
-    }, [isChatPanelHidden])
-
-    useEffect(() => {
-        const chatContainer = document.querySelector('.chat_body')
-        if (chatContainer) chatContainer.scrollTop = chatContainer?.scrollHeight;
-    }, [msgList])
-
     const endCall = () => {
-        console.log('ref', connectionRef.current)
-        console.log('callerId', callerId)
         const to = dialId === "initiator" ? callerId : dialId
-
         socket.emit("call:end", { to, from: mySocketId, name: myName })
-        setCallEnded(true)
-
-        connectionRef.current?.destroy()
-
-        setCallAction('call_terminated')
+        setCallEnded(true);
+        connectionRef.current?.destroy();
+        setCallAction('call_terminated');
         document.getElementById('comms_dialog')?.showModal()
     }
 
-
     const toggleVideo = async () => {
         try {
-            console.log('cammer', isCameraOn)
             localStream?.getVideoTracks().forEach((track) => {
                 track.enabled = !isCameraOn;
             });
-
-            // Update the video state
-            setIsCameraOn(!isCameraOn);
+            setIsCameraOn(!isCameraOn); // Update the video state
         } catch (error) {
             console.error('Error toggling video:', error);
         }
@@ -285,39 +233,27 @@ const DialPage = ({ socket }) => {
 
     const toggleAudio = async () => {
         try {
-            console.log('audio', isAudioOn)
             localStream?.getAudioTracks().forEach((track) => {
                 track.enabled = !isAudioOn;
             });
-
-            // Update the video state
-            setIsAudioOn(!isAudioOn);
+            setIsAudioOn(!isAudioOn); // Update the audio state
         } catch (error) {
             console.error('Error toggling video:', error);
         }
     };
 
-    useEffect(() => {
-        if ((receivingCall && !callAccepted)) {
-            setCallAction('call_incoming')
-            document.getElementById('comms_dialog')?.showModal()
-        }
-    }, [receivingCall])
-
     return (
         <>
             <div className='p-4 sm:p-8 dark bg-slate-950 bg-zinc-950 flex flex-col sm:justify-center items-center h-dvh text-purple-600 '>
-                <button id='test'></button>
-                {/* <h3 className='extra-bold'>SKYDIAL</h3> */}
-                <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-3 mb-10 h-dvh sm:h-3/4 w-full">
+                <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-2 sm:p-3 mb-6 sm:mb-10 h-dvh sm:h-3/4 sm:flex-grow w-full">
                     <div className={`w-full ${isChatPanelHidden ? 'relative h-full' : 'absolute sm:relative -z-10 sm:z-0'}`}>
 
                         {/* Video Local/Remote */}
                         {callAccepted && !callEnded ?
-                            <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-500 rounded-lg shadow-sm w-full h-full'></video>
+                            <video ref={remoteVideoRef} playsInline autoPlay className='border border-gray-600 rounded-lg shadow-sm w-full h-full'></video>
                             :
                             null}
-                        <video ref={myVideoRef} playsInline autoPlay muted className={`border border-gray-500 rounded-lg shadow-sm ${callAccepted && !callEnded ? 'w-1/2 sm:w-1/4 absolute right-4 top-4 shadow-md' : 'w-full h-full'}`}></video>
+                        <video ref={myVideoRef} playsInline autoPlay muted className={`border border-gray-600 rounded-lg shadow-sm ${callAccepted && !callEnded ? 'w-1/3 sm:w-1/4 absolute right-4 top-4 shadow-md' : 'w-full h-full'}`}></video>
 
                         {/* Chat Panel Toggler */}
                         {/* {callAccepted && !callEnded &&
@@ -326,18 +262,18 @@ const DialPage = ({ socket }) => {
 
                         {/* Stream Icons */}
                         <div className='w-full absolute bottom-4 flex justify-center items-center gap-3'>
-                            <section className={`border hover:border-gray-900 border-gray-500 text-white p-2 cursor-pointer rounded-2xl px-3 ${!isAudioOn && 'bg-red-600 border-red-600'}`} onClick={toggleAudio} title={`Turn ${isAudioOn ? 'off' : 'on'} audio`}>
+                            <section className={`border hover:border-gray-900 border-gray-500 text-white p-2 cursor-pointer rounded-2xl px-3 ${!isAudioOn && 'bg-red-700 border-red-700'}`} onClick={toggleAudio} title={`Turn ${isAudioOn ? 'off' : 'on'} audio`}>
                                 <section className={`relative mic ${!isAudioOn && 'after:absolute'}`}>
                                     <GetSVGIcon name="mic" />
                                 </section>
                             </section>
 
-                            <section className={`border hover:border-gray-900 border-gray-500 text-white p-2 cursor-pointer rounded-2xl px-3 ${!isCameraOn && 'bg-red-600 border-red-600'}`} onClick={toggleVideo} title={`Turn ${isCameraOn ? 'off' : 'on'} video`}>
+                            <section className={`border hover:border-gray-900 border-gray-500 text-white p-2 cursor-pointer rounded-2xl px-3 ${!isCameraOn && 'bg-red-700 border-red-700'}`} onClick={toggleVideo} title={`Turn ${isCameraOn ? 'off' : 'on'} video`}>
                                 <GetSVGIcon name={isCameraOn ? "camera_on" : "camera_off"} />
                             </section>
 
                             {callAccepted && !callEnded &&
-                                <section className='bg-red-600 text-white p-2 cursor-pointer rounded-2xl px-3' onClick={endCall}>
+                                <section className='bg-red-700 text-white p-2 cursor-pointer rounded-2xl px-3' onClick={endCall}>
                                     <GetSVGIcon name="end_call" />
                                 </section>
                             }
@@ -357,7 +293,7 @@ const DialPage = ({ socket }) => {
                             </header>
 
                             {/* Chat Body */}
-                            <div className='chat_body h-auto flex-grow p-3 flex flex-col gap-2 overflow-y-auto' ref={chatBody}>
+                            <div className='chat_body h-auto flex-grow p-3 flex flex-col gap-2 overflow-y-auto' >
                                 {msgList?.length > 0 ?
                                     msgList?.map((x, i) =>
                                         <section key={i} className={`text-gray-300 px-3 py-2 rounded-3xl w-fit break-all ${x.from === mySocketId ? 'self-end rounded-br-sm bg-gray-700' : 'rounded-bl-sm bg-gray-500'}`} style={{ maxWidth: "80%" }}>
@@ -381,17 +317,15 @@ const DialPage = ({ socket }) => {
                 </div>
 
 
-                {/* <div className="call-button">
+                {/* 
                     {!(callAccepted && !callEnded) &&
-                        <button color="primary" aria-label="call" className='bg-gray-700 p-2 me-4 rounded' onClick={() => callUser(dialId)}>
-                            call
-                        </button>
+                        <button onClick={() => callUser(dialId)}>call</button>
                     }
-                </div> */}
+                */}
 
 
                 {/* User 'n' Dial Details */}
-                <div className="flex flex-col sm:flex-row gap-2 justify-between p-2 w-full text-white">
+                <div className="flex flex-col sm:flex-row gap-2 justify-between px-2 w-full text-white">
                     {
                         callAccepted && !callEnded &&
                         <div className='flex gap-2'>
@@ -420,16 +354,14 @@ const DialPage = ({ socket }) => {
                         <button onClick={() => document.getElementById('invite_dialog')?.showModal()} >
                             <span>Invite people</span>
                             <GetSVGIcon name="user_plus" />
-                            -id:{socket.id}
                         </button>
                     }
                 </div>
 
-
             </div>
             <InviteDiaglog mySocketId={socket.id} />
             <CommsDialog callAction={callAction} caller={callerName} answerCall={answerCall} declineCall={declineCall} />
-            <Modal action={"set_name"} setName={setMyName} socketId={socket.id} />
+            <Modal action={"set_name"} setName={setMyName} />
         </>
     );
 };

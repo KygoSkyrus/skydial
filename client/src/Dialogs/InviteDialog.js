@@ -1,6 +1,6 @@
 import React from 'react'
 import { SocialIcon } from 'react-social-icons'
-import { EmailShareButton, FacebookShareButton, LineShareButton, PinterestShareButton, RedditShareButton, TelegramShareButton, TwitterShareButton, WhatsappShareButton, LineIcon } from "react-share"
+import { EmailShareButton, FacebookShareButton, LineShareButton, PinterestShareButton, RedditShareButton, TelegramShareButton, TwitterShareButton, WhatsappShareButton } from "react-share"
 import GetSVGIcon from '../GetSVGIcon';
 
 const InviteDiaglog = ({ mySocketId }) => {
@@ -8,7 +8,7 @@ const InviteDiaglog = ({ mySocketId }) => {
     function handleClick(event) {
         const dialog = document.getElementById("invite_dialog");
         if (event.target === dialog) {
-            dialog.close();
+            dialog?.close();
         }
     }
 
@@ -29,7 +29,7 @@ const InviteDiaglog = ({ mySocketId }) => {
 
                 <div className='flex flex-wrap justify-center gap-3 p-3'>
 
-                    <section className='w-[50px] h-[50px] rounded-full grid place-items-center border border-gray-300 cursor-pointer hover:scale-105 relative link_copy' onClick={() => navigator.clipboard.writeText(window.location.host + `/dial/${mySocketId}`)} title='copy link'>
+                    <section className='w-[50px] h-[50px] rounded-full grid place-items-center border border-gray-300 cursor-pointer hover:scale-105 relative link_copy' onClick={() => { navigator.clipboard.writeText(window.location.host + `/dial/${mySocketId}`); document.getElementById("invite_dialog").close(); }} title='copy link'>
                         <GetSVGIcon name="link" />
                     </section>
 

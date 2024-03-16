@@ -1,17 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './App.css';
+import { io } from "socket.io-client";
+
+import './assets/App.css';
 import Homepage from './Homepage';
 import DialPage from './DialPage'
 import PageNotFound from './PageNotFound'
-import { io } from "socket.io-client";
 
-const socket = io('https://skydial.onrender.com', { autoConnect: false });
-// const socket = io('http://localhost:3006', { autoConnect: false }); // getting this out of the compoments bvcz when it was in,,it used to create a new seocket on every rerender
-
-//listens to every socket events
-socket.onAny((event, ...args) => {
-  // console.log('triggered event :- ', event, args);
-});
+const socket = io('https://skydial.onrender.com', { autoConnect: false }); // production
+// const socket = io('http://localhost:3006', { autoConnect: false }); // is no inside the component as it used to create a new socket connection on every render
 
 function App() {
   return (

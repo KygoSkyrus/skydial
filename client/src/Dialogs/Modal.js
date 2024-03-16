@@ -1,17 +1,22 @@
 import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const Modal = ({ action, socketId, setName }) => {
+const Modal = ({ action, setName }) => {
 
     const dialogRef = useRef()
     const navigate = useNavigate()
-
     const [myName, setMyName] = useState('')
     const [dialId, setDialId] = useState('')
 
     function handleClick(event) {
-        if (event.target === dialogRef.current && action !== "set_name") {
-            console.log('dialogRef', dialogRef)
+        if (event.target === dialogRef.current) {
+            if (action === "set_name") {
+                dialogRef.current.classList.add('shake')
+                setTimeout(() => {
+                    dialogRef.current.classList.remove('shake')
+                }, 500);
+                return;
+            }
             dialogRef.current.close();
         }
     }
@@ -19,7 +24,6 @@ const Modal = ({ action, socketId, setName }) => {
     const submitAction = (e) => {
         e.preventDefault()
         if (action === "start") {
-            // to={`/dial/${uuidv4()}`} state={{ hasUserJoined: false }}
             navigate(`/dial/initiator`, { state: { hasUserJoined: false, myName } })
         } else if (action === "set_name") {
             setName(myName);
@@ -57,8 +61,12 @@ const Modal = ({ action, socketId, setName }) => {
                                     </div>
                                 }
                                 <div className='flex flex-wrap gap-2 pt-4 justify-end'>
-                                    <button type="button" className="py-2 px-6 font-semibold rounded  border border-red-400 text-red-400" onClick={(e) => dialogRef.current.close()}>Cancel</button>
-                                    <button type="submit" className="py-2 px-10 font-semibold rounded dark:bg-violet-400 dark:text-gray-900">{action === "join" ? 'Join' : action === "set_name" ? 'Proceed' : 'Start'}</button>
+                                    {action !== "set_name" &&
+                                        <button type="button" className="py-2 px-6 font-semibold rounded  border border-red-400 text-red-400" onClick={(e) => dialogRef.current.close()}>Cancel</button>
+                                    }
+                                    <button type="submit" className="py-2 px-10 font-semibold rounded dark:bg-violet-400 dark:text-gray-900">
+                                        {action === "join" ? 'Join' : action === "set_name" ? 'Proceed' : 'Start'}
+                                    </button>
                                 </div>
                             </form>
                         </div>
