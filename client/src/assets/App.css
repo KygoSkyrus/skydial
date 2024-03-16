@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.homepage,
+.dialpage{
+  height: 100vh;
+  height: 100dvh;
+}
 
 ::-webkit-scrollbar {
   width: 3px;
@@ -38,6 +43,13 @@
   background: #f6f6f6;
   border-radius: 6px;
   rotate: 316deg;
+}
+
+@media screen AND (max-width:640px) {
+  .mic::after {
+   height: 22px;
+   right: 9px;
+  }
 }
 
 .msgIcon::after {

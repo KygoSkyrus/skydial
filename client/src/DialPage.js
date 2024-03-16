@@ -240,8 +240,9 @@ const DialPage = ({ socket }) => {
 
     return (
         <>
-            <div className='p-4 sm:p-8 dark bg-slate-950 bg-zinc-950 flex flex-col sm:justify-center items-center h-screen h-dvh text-purple-600 '>
-                <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-2 sm:p-3 mb-6 sm:mb-10 h-dvh sm:h-3/4 sm:flex-grow w-full">
+            {/* h-screen h-dvh */}
+            <div className='dialpage p-4 sm:p-8 dark bg-slate-950 bg-zinc-950 flex flex-col sm:justify-center items-center text-purple-600 '>
+                <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-2 sm:p-3 mb-6 sm:mb-10 h-full sm:h-3/4 sm:flex-grow w-full">
                     <div className={`w-full ${isChatPanelHidden ? 'relative h-full' : 'absolute sm:relative -z-10 sm:z-0'}`}>
 
                         {/* Video Local/Remote */}
@@ -289,7 +290,7 @@ const DialPage = ({ socket }) => {
                             </header>
 
                             {/* Chat Body */}
-                            <div className='chat_body h-auto flex-grow p-3 flex flex-col gap-2 overflow-y-auto' >
+                            <div className='chat_body h-0 flex-grow p-3 flex flex-col gap-2 overflow-y-auto' >
                                 {msgList?.length > 0 ?
                                     msgList?.map((x, i) =>
                                         <section key={i} className={`text-gray-300 px-3 py-2 rounded-3xl w-fit break-all ${x.from === mySocketId ? 'self-end rounded-br-sm bg-gray-700' : 'rounded-bl-sm bg-gray-500'}`} style={{ maxWidth: "80%" }}>
