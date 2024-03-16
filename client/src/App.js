@@ -3,11 +3,10 @@ import './App.css';
 import Homepage from './Homepage';
 import DialPage from './DialPage'
 import PageNotFound from './PageNotFound'
-import { useEffect, useState } from 'react';
 import { io } from "socket.io-client";
 
-
-const socket = io('http://localhost:3006', { autoConnect: false }); // getting this out of the compoments bvcz when it was in,,it used to create a new seocket on every rerender
+const socket = io('https://skydial.onrender.com', { autoConnect: false });
+// const socket = io('http://localhost:3006', { autoConnect: false }); // getting this out of the compoments bvcz when it was in,,it used to create a new seocket on every rerender
 
 //listens to every socket events
 socket.onAny((event, ...args) => {
