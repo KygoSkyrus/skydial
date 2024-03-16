@@ -42,10 +42,6 @@ const DialPage = ({ socket }) => {
 
     const setUserStream = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then((stream) => {
-                console.log("received accesss", stream);
-            })
-            .catch(err => console.log('eee', err));
         setLocalStream(stream);
         myVideoRef.current.srcObject = stream;
     }
@@ -244,7 +240,7 @@ const DialPage = ({ socket }) => {
 
     return (
         <>
-            <div className='p-4 sm:p-8 dark bg-slate-950 bg-zinc-950 flex flex-col sm:justify-center items-center h-dvh text-purple-600 '>
+            <div className='p-4 sm:p-8 dark bg-slate-950 bg-zinc-950 flex flex-col sm:justify-center items-center h-screen h-dvh text-purple-600 '>
                 <div className="flex justify-center gap-3 rounded-md border border-gray-500 p-2 sm:p-3 mb-6 sm:mb-10 h-dvh sm:h-3/4 sm:flex-grow w-full">
                     <div className={`w-full ${isChatPanelHidden ? 'relative h-full' : 'absolute sm:relative -z-10 sm:z-0'}`}>
 

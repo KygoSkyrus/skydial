@@ -56,8 +56,8 @@ const Modal = ({ action, setName }) => {
                                 </div>
                                 {action === "join" &&
                                     <div>
-                                        <label htmlFor="lastname" className="text-sm sr-only">Email address</label>
-                                        <input id="lastname" type="text" placeholder="Enter dial id" className="w-full rounded-md focus:ring focus:ri dark:border-gray-700 p-3" value={dialId} onChange={e => setDialId(e.target.value)} required />
+                                        <label htmlFor="dialId" className="text-sm sr-only">Dial Id</label>
+                                        <input id="dialId" type="text" placeholder="Enter dial id" className="w-full rounded-md focus:ring focus:ri dark:border-gray-700 p-3" value={dialId} onChange={e => setDialId(e.target.value)} required autoComplete='off' />
                                     </div>
                                 }
                                 <div className='flex flex-wrap gap-2 pt-4 justify-end'>

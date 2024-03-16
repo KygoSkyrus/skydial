@@ -26,7 +26,7 @@ const Homepage = ({ socket }) => {
 
   return (
     <>
-      <div className=' min-h-dvh bg-gray-900 flex flex-col items-center justify-center font-thin'>
+      <div className='h-screen min-h-screen bg-gray-900 flex flex-col items-center justify-center font-thin'>
         <section className="bg-gray-900 text-gray-100 flex flex-grow items-center">
           <div className="container mx-auto flex flex-col items-center px-4 text-center md:px-10 lg:px-32 xl:max-w-3xl">
             <img src={logo} alt='' width="200px" />
