@@ -60,22 +60,21 @@ npm run start
 
 
 ### Demo
-![Preview](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview1.png)
-
-
-Start call                 |  Join call
-:-------------------------:|:-------------------------:
-![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png)   |  ![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png)
-
+![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview1.png)
 
 <p float="left">
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png" width="100" />
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png" width="100" /> 
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview4.png" width="100" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png" width="25%" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png" width="25%" /> 
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview4.png" width="25%" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview5.png" width="25%" />
+</p>
+
+<p float="left">
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview6.png" width="50%" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview7.png" width="50%" /> 
 </p>
 
 
-![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png) ![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png)
 
 
 ### Contributing 🤝
