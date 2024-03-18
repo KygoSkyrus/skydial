@@ -1,5 +1,5 @@
 # SKYDIAL
-> SKYDIAL: Experience the future of communication with SKY-DIAL. Connect seamlessly through crystal-clear video calls, bridging distances and bringing faces together wherever you are. Break free from boundaries and elevate your connections with our innovative video call app. Unleash the power of visual communication – anytime, anywhere!
+> Experience the future of communication with SKY-DIAL. Connect seamlessly through crystal-clear video calls, bridging distances and bringing faces together wherever you are. Break free from boundaries and elevate your connections with our innovative video call app. Unleash the power of visual communication – anytime, anywhere!
 
 
 ### OverView
@@ -60,22 +60,22 @@ npm run start
 
 
 ### Demo
-![Preview](https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview1.png)
+![Preview](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview1.png)
 
 
 Start call                 |  Join call
 :-------------------------:|:-------------------------:
-![](https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview2.png)   |  ![](https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview3.png)
+![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png)   |  ![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png)
 
 
 <p float="left">
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview2.png" width="100" />
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview3.png" width="100" /> 
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview4.png" width="100" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png" width="100" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png" width="100" /> 
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview4.png" width="100" />
 </p>
 
 
-![](https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview2.png) ![](https://github.com/KygoSkyrus/skydial/blob/master/skydial-preview3.png)
+![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png) ![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png)
 
 
 ### Contributing 🤝
