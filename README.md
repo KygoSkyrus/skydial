@@ -69,9 +69,9 @@ Start call                 |  Join call
 
 
 <p float="left">
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png" width="100" />
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png" width="100" /> 
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview4.png" width="100" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png" width="30%" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png" width="30%" /> 
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview4.png" width="30%" />
 </p>
 
 
