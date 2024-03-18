@@ -1,0 +1,77 @@
+# Contributing to SKYDIAL
+
+👍🎉 First off, thanks for taking the time to contribute! 🎉👍
+
+When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owner of this repository before making a change.
+
+
+## Table of Contents
+
+- [Setting Up the project locally](#setting-up-the-project-locally)
+- [Start contributing](#start-contributing)
+- [Reporting Bugs](#reporting-bugs)
+- [Feature Requests](#feature-requests)
+- [Submitting a Pull Request](#submitting-a-pull-request)
+- [License](#license)
+
+## Setting Up the project locally
+
+To install the project you need to have `node` and `npm`
+
+1.  [Fork](https://help.github.com/articles/fork-a-repo/) the project, clone
+    your fork:
+
+    ```sh
+    # Clone your fork
+    git clone https://github.com/<your-username>/skydial.git
+
+    # Navigate to the newly cloned directory
+    cd skydial
+    ```
+
+2.  Your environment needs to be running `node` version = 16.20.2 and `npm` version = 8.19.2
+
+3.  from the root of the project: `npm install` to install all server side dependencies
+
+4.  from the *client* folder of the project: `npm install` to install all client side dependencies
+
+5.  from the root of the project: `npm start` or `npm run dev` to the server.
+
+6.  from the client folder of the project: `npm run start` to the run the react app.
+
+
+## Start Contributing
+1. Create a new branch for your feature or bug fix:
+```sh
+   git checkout -b feature/new-feature
+```
+2. Make your changes to the codebase.
+3. Commit your changes with a descriptive commit message:
+ ```sh
+   git commit -m "Add new feature"
+```
+4. Push your changes to your forked repository:
+```sh
+   git push origin feature/new-feature
+```
+
+
+### Reporting Bugs
+If you encounter any bugs or issues while using the application, please open a new issue on the GitHub repository. Provide as much detail as possible, including steps to reproduce the issue and any error messages you encounter.
+
+
+
+### Feature Requests
+If you have any ideas for new features or improvements to the application, feel free to open a new issue on the GitHub repository and describe your idea in detail. We welcome feedback and suggestions from the community.
+
+
+
+## Submitting a Pull Request
+
+Please go through existing issues and pull requests to check if somebody else is already working on it.
+
+
+### License
+By contributing to this project, you agree that your contributions will be licensed under the MIT License that covers the project.   
+
+Thank you for your contributions! 🎉
