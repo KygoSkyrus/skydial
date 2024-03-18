@@ -63,15 +63,14 @@ npm run start
 ![](https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview1.png)
 
 <p float="left">
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png" width="25%" />
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png" width="25%" /> 
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview4.png" width="25%" />
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview5.png" width="25%" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview2.png" width="33%" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview3.png" width="33%" /> 
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview4.png" width="33%" />
 </p>
 
 <p float="left">
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview6.png" width="50%" />
-  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview7.png" width="50%" /> 
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview6.png" width="49%" />
+  <img src="https://github.com/KygoSkyrus/skydial/blob/master/screenshots/skydial-preview7.png" width="49%" /> 
 </p>
 
 
